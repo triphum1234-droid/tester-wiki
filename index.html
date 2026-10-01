@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="คู่มือ Software Testing ภาษาไทย ตั้งแต่พื้นฐาน การออกแบบการทดสอบ API, SQL, Automation, Performance และการทำงานร่วมกับทีม">
+    <meta name="theme-color" content="#0f172a">
+    <title>Tester Wiki — คู่มือ Software Testing ภาษาไทย</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+        h1, h2, h3, h4, h5, .font-heading { font-family: 'Space Grotesk', 'Sarabun', sans-serif; }
+        aside::-webkit-scrollbar { width: 6px; }
+        aside::-webkit-scrollbar-track { background: transparent; }
+        aside::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        main::-webkit-scrollbar { width: 8px; }
+        main::-webkit-scrollbar-track { background: #f8fafc; }
+        main::-webkit-scrollbar-thumb { background-color: #94a3b8; border-radius: 4px; }
+        .nav-item.active { background-color: #eff6ff; color: #4f46e5; font-weight: 600; border-right: 3px solid #4f46e5; }
+    </style>
+</head>
+<body class="flex h-screen bg-slate-50 text-slate-800 overflow-hidden">
+    <a href="#articleContent" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:text-indigo-700 focus:shadow-lg">ข้ามไปยังเนื้อหาหลัก</a>
+
+    <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-50 shadow-md">
+        <div class="flex items-center font-bold text-lg font-heading">
+            <i class="fas fa-bug text-indigo-400 mr-2" aria-hidden="true"></i> Tester Wiki
+        </div>
+        <button id="mobileMenuButton" type="button" aria-label="เปิดเมนูหลัก" aria-controls="sidebar" aria-expanded="false" onclick="toggleMobileMenu()" class="text-white text-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded px-2 py-1"><i class="fas fa-bars" aria-hidden="true"></i></button>
+    </div>
+
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 w-80 max-w-[90vw] md:max-w-none bg-white border-r border-slate-200 flex flex-col h-full z-40 transition-transform duration-300 ease-in-out motion-reduce:transition-none shadow-lg md:shadow-none">
+        <div class="hidden md:flex h-16 items-center px-6 border-b border-slate-200 bg-slate-900 text-white flex-shrink-0">
+            <i class="fas fa-bug text-indigo-400 text-2xl mr-3" aria-hidden="true"></i>
+            <span class="font-bold text-xl font-heading tracking-tight">Tester Wiki</span>
+        </div>
+        
+        <div class="p-4 border-b border-slate-200 bg-white flex-shrink-0 mt-16 md:mt-0">
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-sm" aria-hidden="true"></i>
+                <input type="search" id="searchInput" aria-label="ค้นหาหัวข้อและเนื้อหาบทความ" placeholder="ค้นหาหัวข้อและเนื้อหา..." class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors shadow-inner" oninput="filterMenu()">
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4" id="sidebarNav" aria-label="บทความ"></nav>
+        
+        <div class="p-4 border-t border-slate-200 bg-slate-50 flex-shrink-0 text-xs text-slate-500 text-center font-medium">
+            เนื้อหานี้ช่วยให้ทีมตัดสินใจเรื่องคุณภาพได้ดีขึ้น
+        </div>
+    </aside>
+
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden md:hidden backdrop-blur-sm" onclick="toggleMobileMenu()"></div>
+
+    <main class="flex-1 flex flex-col min-h-0 bg-slate-50 relative mt-16 md:mt-0 overflow-y-auto" id="mainContentArea">
+        <header class="hidden md:flex h-16 items-center px-8 border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-10 flex-shrink-0 shadow-sm">
+            <div class="text-sm text-slate-500 font-medium" id="breadcrumb">
+                <i class="fas fa-home mr-2 text-indigo-500" aria-hidden="true"></i> <span id="bc-category">เริ่มต้นและเส้นทางอาชีพ</span> <i class="fas fa-chevron-right text-[10px] mx-3 text-slate-300" aria-hidden="true"></i> <span id="bc-title" class="text-indigo-700 font-bold bg-indigo-50 px-3 py-1 rounded-full">Roadmap ของ Tester ยุคใหม่</span>
+            </div>
+        </header>
+        
+        <div class="flex-1 p-4 sm:p-6 md:p-10 lg:p-12 xl:px-32 pb-32">
+            <article tabindex="-1" class="prose max-w-4xl mx-auto prose-headings:font-heading prose-a:text-indigo-600 prose-img:rounded-xl prose-img:shadow-md bg-white p-5 sm:p-8 md:p-12 rounded-2xl shadow-sm border border-slate-100" id="articleContent">
+                <!-- Content will be injected here -->
+            </article>
+        </div>
+    </main>
+
+    <script>
+        const menuData = [
+            {
+                category: "0. เริ่มต้นและเส้นทางอาชีพ", icon: "fas fa-star text-yellow-500",
+                items: [
+                    { id: 'modern_tester', title: 'Software Tester ยุคนี้คืออะไร?' },
+                    { id: 'how_to_get_job', title: 'เตรียมตัวสมัครงาน Software Tester' }
+                ]
+            },
+            {
+                category: "1. พื้นฐานและคุณภาพซอฟต์แวร์", icon: "fas fa-book-open",
+                items: [
+                    { id: 'intro', title: 'Roadmap ของ Tester ยุคใหม่' },
+                    { id: 'qa_vocab', title: 'คำศัพท์และสิ่งที่ต้องรู้พื้นฐาน' },
+                    { id: 'stlc', title: 'STLC แบบเจาะลึก (Deep Dive)' },
+                    { id: 'risk_testing', title: 'จัดลำดับการทดสอบตามความเสี่ยง' },
+                    { id: 'test_design', title: 'เทคนิคออกแบบการทดสอบ' },
+                    { id: 'accessibility', title: 'การทดสอบ Accessibility เบื้องต้น' },
+                    { id: 'security_testing', title: 'การทดสอบความปลอดภัยเว็บเบื้องต้น' },
+                    { id: 'bug_lifecycle', title: 'Defect & Bug Life Cycle' }
+                ]
+            },
+            {
+                category: "2. Test Automation", icon: "fas fa-robot",
+                items: [
+                    { id: 'automation_strategy', title: 'กลยุทธ์: เมื่อไหร่ควร Automate?' },
+                    { id: 'playwright', title: 'Playwright สำหรับ UI/E2E Testing' },
+                    { id: 'cypress', title: 'Cypress สำหรับงาน Frontend' },
+                    { id: 'pom', title: 'Design Pattern: POM' }
+                ]
+            },
+            {
+                category: "3. API และ Database Testing", icon: "fas fa-network-wired",
+                items: [
+                    { id: 'api_deepdive', title: 'โครงสร้าง API และ HTTP' },
+                    { id: 'postman_advanced', title: 'Postman: Scripts และการรัน Collection' },
+                    { id: 'database_testing', title: 'SQL และการทดสอบข้อมูล' }
+                ]
+            },
+            {
+                category: "4. Performance Testing", icon: "fas fa-tachometer-alt",
+                items: [
+                    { id: 'perf_metrics', title: 'Metrics สำคัญของ Performance' },
+                    { id: 'k6_intro', title: 'เขียน Load Test ด้วย k6' }
+                ]
+            },
+            {
+                category: "5. DevOps & CI/CD", icon: "fas fa-infinity",
+                items: [
+                    { id: 'git_qa', title: 'Git Workflow สำหรับฝั่ง QA' },
+                    { id: 'github_actions', title: 'CI/CD ด้วย GitHub Actions' }
+                ]
+            },
+            {
+                category: "6. AI in Testing", icon: "fas fa-brain",
+                items: [
+                    { id: 'prompt_qa', title: 'Prompt Engineering สำหรับ QA' },
+                    { id: 'ai_testdata', title: 'การใช้ AI ช่วยสร้างข้อมูลเทส' }
+                ]
+            },
+            {
+                category: "7. ทักษะภาคปฏิบัติ (Practical Skills)", icon: "fas fa-tools",
+                items: [
+                    { id: 'how_to_write_testcase', title: 'เขียน Test Case ให้ชัดเจน' },
+                    { id: 'qa_team_collab', title: 'การทำงานร่วมกับ Dev, SA, PO' },
+                    { id: 'jira_guide', title: 'การใช้ Jira เปิดบั๊กและตามงาน' },
+                    { id: 'tool_stack', title: 'เครื่องมือที่พบบ่อยและวิธีเลือก' }
+                ]
+            }
+        ];
+
+        const articleData = {
+            // ================= CATEGORY 0 (NEW) =================
+                        'modern_tester': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">Software Tester ทำอะไรบ้าง?</h1>
+                <p class="text-slate-600 mt-4 text-lg">การทดสอบซอฟต์แวร์ช่วยให้ทีมเห็นว่าผลิตภัณฑ์ทำงานตามความต้องการตรงไหน ยังมีความเสี่ยงอะไร และควรตัดสินใจอย่างไรต่อ ผู้ทดสอบไม่ได้มีหน้าที่เพียงคลิกหาบั๊ก และการทดสอบก็ไม่สามารถพิสูจน์ได้ว่าระบบไม่มีบั๊กเลย</p>
+
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 my-6">
+                    <h2 class="text-indigo-800 mt-0 font-bold">คุณภาพเป็นความรับผิดชอบร่วมกัน</h2>
+                    <p class="text-sm text-indigo-900 mb-0">นักพัฒนา ผู้ทดสอบ นักวิเคราะห์ เจ้าของผลิตภัณฑ์ และผู้ใช้ช่วยกันสร้างคุณภาพตั้งแต่ทำความเข้าใจปัญหา ออกแบบและพัฒนา ไปจนถึงติดตามผลหลังส่งมอบ ชื่อตำแหน่งและขอบเขตงาน เช่น Software Tester, QA Analyst, QA Engineer หรือ SDET แตกต่างกันตามองค์กร</p>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">งานทดสอบในแต่ละช่วง</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h3 class="text-indigo-800 mt-0 font-bold">ก่อนพัฒนา</h3>
+                        <p class="text-sm text-slate-700 mb-0">ทำความเข้าใจผู้ใช้และ acceptance criteria ตั้งคำถามเมื่อข้อกำหนดยังคลุมเครือ มองหาความเสี่ยงและกรณีผิดปกติ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h3 class="text-indigo-800 mt-0 font-bold">ระหว่างพัฒนา</h3>
+                        <p class="text-sm text-slate-700 mb-0">ทบทวนการออกแบบ เตรียมข้อมูล ออกแบบและรันการทดสอบในระดับที่เหมาะสม ช่วยทีมตรวจสอบปัญหาและยืนยันการแก้ไข</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h3 class="text-indigo-800 mt-0 font-bold">ก่อนและหลังส่งมอบ</h3>
+                        <p class="text-sm text-slate-700 mb-0">ทดสอบเส้นทางสำคัญ ตรวจผลกระทบจากการเปลี่ยนแปลง สื่อสารความเสี่ยงและหลักฐานที่ช่วยตัดสินใจ พร้อมเรียนรู้จากปัญหาที่เกิดขึ้นจริง</p>
+                    </div>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ทักษะที่ควรค่อยๆ สร้าง</h2>
+                <ul class="text-sm text-slate-700 space-y-2 pl-5 list-disc">
+                    <li><strong>คิดเชิงทดสอบ:</strong> แปลงความต้องการเป็นตัวอย่างที่ตรวจสอบได้ คิดทั้งกรณีปกติ ขอบเขต และข้อผิดพลาด</li>
+                    <li><strong>รู้จักผลิตภัณฑ์:</strong> เข้าใจผู้ใช้ กฎธุรกิจ ข้อมูล และผลกระทบเมื่อระบบผิดพลาด</li>
+                    <li><strong>สื่อสารชัดเจน:</strong> อธิบายสิ่งที่ทำ ผลที่คาด ผลที่เกิดจริง และความเสี่ยงโดยไม่กล่าวโทษกัน</li>
+                    <li><strong>ทักษะเทคนิคตามงาน:</strong> พื้นฐานเว็บและ HTTP, API, SQL, Git หรือการเขียนอัตโนมัติ ทยอยเรียนตามบทบาทที่สนใจ</li>
+                    <li><strong>เรียนรู้และปรับปรุง:</strong> ทบทวนผลทดสอบและปรับวิธีทำงานให้เหมาะกับทีมและผลิตภัณฑ์</li>
+                </ul>
+            `,
+            'how_to_get_job': `
+                <h1 class="text-slate-900 border-b-2 border-emerald-500 pb-2 inline-block">เตรียมตัวสมัครงาน Software Tester</h1>
+                <p class="text-slate-600 mt-4 text-lg">ข้อกำหนดงานแตกต่างกันตามบริษัท ผลิตภัณฑ์ และระดับประสบการณ์ จึงไม่มีชุดเครื่องมือหรือแผนเรียนแบบเดียวที่รับประกันการได้งาน ให้เริ่มจากประกาศงานที่สนใจ แล้วเลือกฝึกสิ่งที่ตรงกับบทบาทนั้น</p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">แผนเตรียมตัวแบบเป็นขั้น</h2>
+                <ol class="list-decimal pl-5 space-y-4 text-sm text-slate-700">
+                    <li><strong>ฝึกวิเคราะห์ฟีเจอร์:</strong> อ่านข้อกำหนด แยกเงื่อนไขและคำถาม ออกแบบกรณีทดสอบทั้งกรณีปกติ ขอบเขต และข้อผิดพลาด พร้อมระบุสิ่งที่ยังไม่ทราบ</li>
+                    <li><strong>ฝึกบันทึกและสื่อสารปัญหา:</strong> เขียนขั้นตอนทำซ้ำ ผลที่คาด ผลที่เกิดจริง สภาพแวดล้อม และหลักฐานที่ปกปิดข้อมูลอ่อนไหวแล้ว</li>
+                    <li><strong>เพิ่มพื้นฐานเทคนิค:</strong> ทำความเข้าใจ HTTP และ API; เรียน SQL แบบอ่านข้อมูล; ใช้ Git เพื่อจัดการงานและส่งการเปลี่ยนแปลงตามกระบวนการทีม</li>
+                    <li><strong>เลือกทักษะเฉพาะทาง:</strong> หากงานเป้าหมายต้องการ UI automation ให้เลือก Playwright หรือ Cypress อย่างใดอย่างหนึ่งก่อน แล้วฝึกเขียน assertion และดูแลชุดทดสอบให้เชื่อถือได้</li>
+                    <li><strong>ทำตัวอย่างผลงานเล็กๆ:</strong> ใช้แอปสาธิตหรือแอปที่ได้รับอนุญาต ใส่ README ที่บอกขอบเขต สมมติฐาน test cases, ตัวอย่าง API หรือสคริปต์เทส และวิธีรันที่ทำซ้ำได้</li>
+                    <li><strong>ทบทวนก่อนสัมภาษณ์:</strong> อธิบายเหตุผลที่เลือกทดสอบแต่ละเรื่อง ข้อจำกัดของวิธีที่ใช้ และวิธีสื่อสารความเสี่ยง ไม่ต้องอ้างว่าทดสอบได้ครบทุกกรณี</li>
+                </ol>
+
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-200 my-8">
+                    <h2 class="text-blue-800 mt-0 font-bold">ตัวอย่าง: วางแผนทดสอบหน้า Login</h2>
+                    <p class="text-sm text-blue-900">เริ่มจากถามกติกาของระบบก่อน เช่น วิธีระบุตัวตน ข้อความเมื่อข้อมูลไม่ถูกต้อง ข้อจำกัดจำนวนครั้ง และการกู้คืนบัญชี จากนั้นพิจารณากลุ่มทดสอบเหล่านี้ตามขอบเขตงาน:</p>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-blue-900">
+                        <li>ข้อมูลถูกต้องและไม่ถูกต้อง รวมถึงช่องว่าง ความยาวสูงสุด และรูปแบบข้อมูล</li>
+                        <li>การตอบสนองเมื่อบัญชีถูกล็อก เซสชันหมดอายุ หรือบริการยืนยันตัวตนขัดข้อง</li>
+                        <li>การใช้งานด้วยแป้นพิมพ์ ข้อความช่วยเหลือ และการแสดงข้อผิดพลาดที่เข้าใจได้</li>
+                        <li>การตอบสนองของ API และการควบคุมสิทธิ์ โดยใช้บัญชีและสภาพแวดล้อมทดสอบที่ได้รับอนุญาต</li>
+                    </ul>
+                    <p class="text-sm text-blue-900 mb-0">การทดสอบด้านความปลอดภัย เช่น SQL injection ต้องทำเฉพาะกับระบบที่ได้รับอนุญาตและเป็นขอบเขตทดสอบที่ตกลงกัน ห้ามนำ payload ไปลองกับระบบจริงหรือระบบของผู้อื่นเอง</p>
+                </div>
+
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-200">
+                    <h2 class="text-amber-800 mt-0 font-bold">จัดทำ Portfolio อย่างปลอดภัย</h2>
+                    <p class="text-sm text-amber-900 mb-0">ใช้ข้อมูลจำลองและแอปที่อนุญาตให้ทดสอบเท่านั้น อย่าเผยแพร่รหัสผ่าน token, HAR ที่ยังมีคุกกี้, ข้อมูลลูกค้า หรือรายละเอียดภายในบริษัท ตรวจไฟล์และภาพหน้าจอก่อนอัปโหลด และบอกให้ชัดว่าอะไรทำเอง อะไรสร้างด้วย AI และอะไรเป็นข้อจำกัด</p>
+                </div>
+            `,
+            'intro': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">Roadmap การเป็น Software Tester</h1>
+                <p class="text-slate-600 text-lg mt-4">ใช้แผนนี้เป็นจุดเริ่มต้น แล้วเลือกหัวข้อให้ตรงกับผลิตภัณฑ์และงานของคุณ การทดสอบเป็นงานที่ปรับตามบริบท ไม่มีเครื่องมือหรือกระบวนการชุดเดียวที่เหมาะกับทุกทีม</p>
+                <div class="bg-indigo-50 border-l-4 border-indigo-600 p-5 my-6 rounded-r-lg shadow-sm">
+                    <h2 class="text-indigo-800 mt-0 font-bold flex items-center"><i class="fas fa-lightbulb text-yellow-500 mr-2 text-xl" aria-hidden="true"></i> เส้นทางแนะนำ</h2>
+                    <ol class="list-decimal pl-5 text-sm text-indigo-900 space-y-2 mb-0">
+                        <li><strong>เข้าใจพื้นฐาน:</strong> บทบาทผู้ทดสอบ วงจรการทดสอบ ความเสี่ยง และคำศัพท์</li>
+                        <li><strong>ฝึกคิดกรณีทดสอบ:</strong> ใช้การแบ่งกลุ่ม ค่าขอบ ตารางตัดสินใจ และการเปลี่ยนสถานะ</li>
+                        <li><strong>ดูหลายชั้นของระบบ:</strong> ฝึกเว็บ/API และ SQL ในสภาพแวดล้อมที่ได้รับอนุญาต</li>
+                        <li><strong>ทำซ้ำงานที่เหมาะสม:</strong> เรียน automation และ CI เมื่อมีกรณีทดสอบที่เสถียรและคุ้มค่าพอ</li>
+                        <li><strong>ต่อยอดตามความเสี่ยง:</strong> Performance, Accessibility, Security, AI หรือเครื่องมือเฉพาะทีม</li>
+                    </ol>
+                </div>
+                <p class="text-sm text-slate-700">อย่าพยายามทดสอบทุกค่าที่เป็นไปได้ ให้ระบุเป้าหมายและความเสี่ยงก่อน แล้วเลือกหลักฐานและวิธีทดสอบที่เหมาะสม ข้อความสีหรือรูปแบบการ์ดในเว็บใช้เพื่อช่วยอ่าน ไม่ได้หมายความว่ามีระดับมาตรฐานรับรอง</p>
+            `,
+            'qa_vocab': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">คำศัพท์และสิ่งที่ต้องรู้พื้นฐาน</h1>
+                <p class="text-slate-600 mt-4 text-lg">คำศัพท์ช่วยให้ทีมสื่อสารตรงกัน แต่การใช้งานจริงและชื่อสถานะอาจแตกต่างกันตามโครงการ ควรยืนยันความหมายกับทีมเมื่อเริ่มงาน</p>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-compass mr-2" aria-hidden="true"></i> แนวคิดพื้นฐาน</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Quality Assurance (QA) และ Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">QA เน้นสร้างความเชื่อมั่นและปรับปรุงวิธีทำงานที่ช่วยให้เกิดคุณภาพ ส่วน testing เน้นประเมินผลิตภัณฑ์และให้ข้อมูลเกี่ยวกับคุณภาพ ทั้งสองเกี่ยวข้องกันและไม่ใช่ชื่อเรียกของงานเดียวกันทุกบริบท</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Verification และ Validation</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">Verification ตรวจว่าสิ่งที่สร้างสอดคล้องกับข้อกำหนดที่ระบุหรือไม่ ส่วน validation ตรวจว่าผลิตภัณฑ์ตอบโจทย์การใช้งานและความต้องการจริงหรือไม่ วิธีตรวจอาจมีทั้งการทบทวนและการทดสอบ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Testing และ Debugging</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">Testing เปิดเผยข้อมูลเกี่ยวกับพฤติกรรมหรือข้อบกพร่อง ส่วน debugging คือการวิเคราะห์หาสาเหตุและแก้ไขโค้ดหรือระบบ หลังแก้แล้วควรตรวจซ้ำและพิจารณาผลกระทบที่เกี่ยวข้อง</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Coverage (ความครอบคลุม)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">บอกว่าสิ่งที่เลือกวัด เช่น requirement, risk, condition หรือ code ถูกตรวจถึงระดับใด ค่าความครอบคลุมเป็นหลักฐานประกอบการประเมิน ไม่ได้ยืนยันว่าระบบไม่มีข้อบกพร่อง</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-book mr-2"></i> คำศัพท์หมวด: ประเภทของการทดสอบ (Test Types)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">UAT (User Acceptance Testing)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">การทดสอบการยอมรับที่ผู้ใช้ ลูกค้า หรือผู้แทนธุรกิจช่วยตรวจว่าผลิตภัณฑ์ตอบโจทย์การใช้งานและเกณฑ์ที่ตกลงไว้หรือไม่ บทบาท ผู้เข้าร่วม และเวลาทำ UAT แตกต่างกันได้ และไม่ได้เป็นด่านบังคับสุดท้ายของทุกทีม</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">SIT (System Integration Testing)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจการทำงานร่วมกันระหว่างระบบหรือส่วนประกอบที่เชื่อมต่อกัน เช่น บริการสั่งซื้อกับบริการชำระเงิน ตรวจสัญญาข้อมูล การจัดการข้อผิดพลาด และผลของการสื่อสารระหว่างกัน รายละเอียดขอบเขตขึ้นกับสถาปัตยกรรมและทีม</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Regression Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ทดสอบซ้ำเพื่อประเมินว่าการเปลี่ยนแปลง เช่น แก้บั๊กหรือเพิ่มฟีเจอร์ กระทบส่วนอื่นหรือไม่ เลือกขอบเขตตามความเสี่ยงและผลกระทบ การเปลี่ยนทุกครั้งไม่จำเป็นต้องรันชุดทดสอบทั้งหมด</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Smoke Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ชุดตรวจสอบสั้นๆ ของฟังก์ชันสำคัญเพื่อดูว่าบิลด์หรือสภาพแวดล้อมพร้อมสำหรับการทดสอบต่อหรือไม่ หากไม่ผ่าน ทีมอาจหยุดและแก้ปัญหาพื้นฐานก่อน ทั้งขอบเขตและเกณฑ์ผ่านควรตกลงกัน</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-layer-group mr-2"></i> คำศัพท์หมวด: ระดับของการทดสอบ (Testing Levels)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Unit Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจหน่วยย่อยของซอฟต์แวร์ เช่น ฟังก์ชัน คลาส หรือโมดูล โดยมักแยกจากระบบภายนอกที่ยังไม่ใช่เป้าหมายของการทดสอบ ผู้พัฒนาและผู้เชี่ยวชาญด้านการทดสอบอาจร่วมกันออกแบบหรือดูแลการทดสอบระดับนี้</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Integration Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจการโต้ตอบระหว่างส่วนประกอบหรือระบบ เช่น บริการกับฐานข้อมูล หรือบริการสองตัวที่เชื่อมผ่าน API ขอบเขตอาจแคบหรือกว้างตามระบบ และอาจมีการทดสอบตั้งแต่ระดับส่วนประกอบไปจนถึงระดับระบบ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">System Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจระบบที่ประกอบแล้วเทียบกับข้อกำหนดและเป้าหมายในขอบเขตที่กำหนด โดยทีมทดสอบอาจมีหลายบทบาทร่วมรับผิดชอบ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">E2E (End-to-End Testing)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจเส้นทางการทำงานตั้งแต่ต้นจนจบผ่านส่วนประกอบที่เกี่ยวข้อง เช่น สร้างคำสั่งซื้อและตรวจผลการชำระเงิน โดยใช้บริการจริงหรือจำลองบางส่วนได้ตามเป้าหมายและความเสี่ยง</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-balance-scale mr-2"></i> Functional VS Non-Functional</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 shadow-sm">
+                        <strong class="text-blue-800 text-lg">Functional Testing</strong>
+                        <p class="text-sm text-blue-900 mt-1 mb-0">ตรวจว่าระบบทำงานและให้ผลตามข้อกำหนดหรือไม่ เช่น เข้าสู่ระบบได้ตามกติกาและคำนวณยอดตะกร้าถูกต้อง</p>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 shadow-sm">
+                        <strong class="text-amber-800 text-lg">Non-Functional Testing</strong>
+                        <p class="text-sm text-amber-900 mt-1 mb-0">ประเมินคุณลักษณะ เช่น ประสิทธิภาพ ความปลอดภัย การเข้าถึง (Accessibility) ความเข้ากันได้ ความน่าเชื่อถือ และการใช้งานได้จริง การทดสอบเชิงคุณภาพยังตรวจความถูกต้องของพฤติกรรมในมุมเหล่านี้ด้วย</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-file-alt mr-2"></i> คำศัพท์หมวด: เอกสารและการจัดการ</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Test Scenario (ภาพกว้าง)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">สถานการณ์หรือหัวข้อที่เราจะเทส เช่น "ทดสอบการล็อคอินด้วยรหัสผ่านผิด" (มักเขียนเป็นบรรทัดเดียวสั้นๆ)</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Test Case (รายละเอียดลึก)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ชุดเงื่อนไข ข้อมูล ขั้นตอน และผลที่คาดหวังซึ่งใช้ตรวจสอบเป้าหมายหนึ่งๆ ระดับรายละเอียดขึ้นกับผู้ใช้ชุดทดสอบ ความเสี่ยง และวิธีทำงานของทีม ไม่จำเป็นต้องเขียนทุกกรณีเป็นขั้นตอนตายตัว</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Defect / Bug</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">สิ่งที่ระบบทำงานไม่ตรงกับ Expected Result (ผลลัพธ์ที่คาดหวัง) หรือไม่ตรงตาม Requirement</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Expected Result VS Actual Result</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0"><strong>Expected Result:</strong> สิ่งที่ควรจะเป็น (เช่น ขึ้นข้อความ Error)<br><strong>Actual Result:</strong> สิ่งที่เกิดขึ้นจริงตอนเราเทส (เช่น หน้าจอขาวค้างไปเลย = เกิดบั๊ก!)</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-laptop-code mr-2"></i> คำศัพท์หมวด: เทคนิคการทำงาน</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-green-600 text-lg"><i class="fas fa-plus-circle mr-1"></i> Positive Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ทดสอบด้วยข้อมูลและลำดับที่ถูกต้องตามข้อกำหนด เช่น ผู้ใช้เข้าสู่ระบบและทำงานหลักได้สำเร็จ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-red-600 text-lg"><i class="fas fa-minus-circle mr-1"></i> Negative Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ทดสอบข้อมูลหรือเหตุการณ์ที่ไม่ถูกต้องตามข้อกำหนด เพื่อดูว่าระบบปฏิเสธหรือจัดการข้อผิดพลาดได้อย่างปลอดภัย โดยยึดขอบเขตและกติกาของระบบ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Black-Box Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ออกแบบการทดสอบจากพฤติกรรมและข้อกำหนดที่สังเกตได้ โดยไม่จำเป็นต้องตรวจโครงสร้างภายใน ผู้ทดสอบ นักพัฒนา และทีมอื่นใช้วิธีนี้ได้</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Edge Case</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">เงื่อนไขหรือชุดเหตุการณ์ที่มักไม่อยู่ในเส้นทางหลัก เช่น ข้อมูลยาวเกินข้อกำหนดหรือการเชื่อมต่อขาดกลางทาง คำว่า edge case ไม่ได้แปลว่าความเสี่ยงต่ำเสมอ ให้พิจารณาผลกระทบและกติกาจริง</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">White-Box Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ออกแบบการทดสอบโดยอาศัยโครงสร้างภายใน เช่น การไล่เส้นทางหรือเงื่อนไขในโค้ด ไม่ได้หมายถึงตรวจทุกบรรทัดเสมอ และนำไปใช้ได้หลายระดับ ไม่จำกัดเฉพาะ unit tests</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Exploratory Testing</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">การเรียนรู้ ออกแบบ และรันทดสอบไปพร้อมกันภายในช่วงเวลาที่กำหนด อาจใช้ charter หรือคำถามนำ แล้วบันทึกสิ่งที่ตรวจ หลักฐาน และข้อค้นพบ ไม่ใช่การสุ่มคลิกโดยไม่มีเป้าหมาย</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-server mr-2"></i> คำศัพท์หมวด: Environment (สภาพแวดล้อม)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-100 p-4 rounded-lg border border-slate-300 shadow-sm">
+                        <strong class="text-slate-800 text-lg font-mono">DEV (Development)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">สภาพแวดล้อมสำหรับพัฒนาและตรวจงานระหว่างสร้างระบบ ทีมอาจเริ่มทดสอบใน DEV ได้ตามการเข้าถึงและความเสถียรของระบบ</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 shadow-sm">
+                        <strong class="text-blue-800 text-lg font-mono">SIT / QA (Testing)</strong>
+                        <p class="text-sm text-blue-900 mt-1 mb-0">ชื่อเรียกที่แต่ละองค์กรใช้ไม่เหมือนกัน SIT มักหมายถึงสภาพแวดล้อมสำหรับตรวจการเชื่อมต่อระบบ ส่วน QA อาจเป็นชื่อทีม ขั้นตอน หรือสภาพแวดล้อม ควรตรวจสอบความหมายกับทีม</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 shadow-sm">
+                        <strong class="text-purple-800 text-lg font-mono">UAT / Staging</strong>
+                        <p class="text-sm text-purple-900 mt-1 mb-0">Staging มักใช้เตรียมและตรวจบิลด์ก่อนใช้งานจริง ส่วน UAT คือกิจกรรมตรวจการยอมรับโดยผู้ใช้หรือผู้แทนธุรกิจ สองคำนี้ไม่จำเป็นต้องเป็นสภาพแวดล้อมเดียวกัน</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-200 shadow-sm">
+                        <strong class="text-green-800 text-lg font-mono flex items-center"><i class="fas fa-globe mr-2"></i> PROD (Production)</strong>
+                        <p class="text-sm text-green-900 mt-1 mb-0">ระบบจริงที่ผู้ใช้ใช้งาน ควรทดสอบหรือเปลี่ยนข้อมูลใน PROD เฉพาะเมื่อมีการอนุมัติ ขอบเขต เครื่องมือ และการควบคุมความเสี่ยงที่ชัดเจน</p>
+                    </div>
+                </div>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-users-cog mr-2"></i> คำศัพท์หมวด: Agile & Scrum (การทำงานเป็นทีม)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Sprint (สปรินต์)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ช่วงเวลาคงที่ใน Scrum ที่ทีมใช้ทำงานให้บรรลุ Sprint Goal ระยะเวลาขึ้นกับทีมและต้องไม่เกินหนึ่งเดือน ไม่จำเป็นต้องยาวสองสัปดาห์หรือปล่อยให้ผู้ใช้ทุกครั้งเมื่อจบ Sprint</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">User Story</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">Requirement ที่เขียนในมุมมองของ User (เช่น "ในฐานะลูกค้า ฉันต้องการล็อกอินด้วย Google เพื่อความรวดเร็ว")</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">AC (Acceptance Criteria)</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">เงื่อนไขที่ช่วยให้ทีมเข้าใจเป้าหมายและประเมิน User Story ได้ตรงกัน ทีมใช้ Acceptance Criteria ออกแบบ test cases หรือ checks และทบทวนความครบถ้วนตามบริบท</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">Severity VS Priority</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0"><strong>Severity:</strong> ผลกระทบของข้อบกพร่องตามเกณฑ์ที่ทีมกำหนด<br><strong>Priority:</strong> ลำดับหรือความเร่งด่วนในการจัดการ ซึ่งพิจารณาผลกระทบ โอกาสเกิด ลูกค้าที่ได้รับผล และแผนงานร่วมกัน การให้ระดับไม่จำเป็นต้องเป็นหน้าที่ของ QA คนเดียว</p>
+                    </div>
+                </div>
+            `,
+            'stlc': `
+                <h1 class="text-slate-900 border-b-2 border-blue-500 pb-2 inline-block">STLC (Software Testing Life Cycle) แบบเจาะลึก</h1>
+                <p class="text-slate-600 mt-4 text-lg">STLC เป็นแบบจำลองกิจกรรมที่ช่วยวางแผนและติดตามงานทดสอบ ลำดับและเอกสารจริงแตกต่างกันตามทีม วิธีพัฒนา ข้อบังคับ และความเสี่ยง กิจกรรมหลายอย่างเกิดซ้ำหรือทำควบคู่กันได้</p>
+                
+                <div class="space-y-6 mt-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-blue-800 mt-0 font-bold border-b border-blue-100 pb-2"><i class="fas fa-search mr-2"></i> Phase 1: Requirement Analysis (วิเคราะห์ความต้องการ)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> ตรวจสอบว่า Requirement ที่ SA หรือ PO เขียนมานั้น "สามารถนำมาทดสอบได้จริงหรือไม่ (Testability)" และครอบคลุมเงื่อนไขครบถ้วนไหม</p>
+                        <p class="text-sm text-slate-700"><strong>สิ่งที่ QA ช่วยได้:</strong> ร่วมทบทวน requirement, ตั้งคำถามถึงกรณีที่ยังไม่ชัด (เช่น ถ้าระบบขัดข้องตอนจ่ายเงินจะเกิดอะไรขึ้น?) และช่วยทีมระบุความเสี่ยง</p>
+                        <div class="bg-blue-50 text-blue-900 p-2 rounded mt-2 text-sm border border-blue-200"><strong>ผลที่อาจได้:</strong> ข้อกำหนดที่ชัดขึ้น รายการคำถาม และการเชื่อมโยงความต้องการกับการทดสอบ (เช่น RTM เมื่อทีมเห็นว่าจำเป็น)</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-blue-800 mt-0 font-bold border-b border-blue-100 pb-2"><i class="fas fa-chess-knight mr-2"></i> Phase 2: Test Planning (วางแผนการทดสอบ)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> กำหนดแนวทาง ขอบเขต ระยะเวลา และทรัพยากร โดยผู้รับผิดชอบการทดสอบร่วมกับทีม</p>
+                        <ul class="text-sm text-slate-700 list-disc pl-5">
+                            <li><strong>Scope:</strong> ฟีเจอร์ไหนเทส ฟีเจอร์ไหนไม่เทสในรอบนี้</li>
+                            <li><strong>Approach:</strong> ระบุระดับ ประเภท และวิธีทดสอบที่เหมาะกับความเสี่ยง ไม่จำเป็นต้องตั้งสัดส่วน Manual/Automation ล่วงหน้า</li>
+                            <li><strong>Environment:</strong> ระบุระบบและข้อมูลที่ต้องใช้ ผู้รับผิดชอบ ข้อจำกัด และวิธีจัดการข้อมูลอย่างปลอดภัย</li>
+                        </ul>
+                        <div class="bg-blue-50 text-blue-900 p-2 rounded mt-2 text-sm border border-blue-200"><strong>ผลที่อาจได้:</strong> แผนหรือบันทึกแนวทางทดสอบในรูปแบบที่เหมาะกับขนาดและข้อกำหนดของงาน</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-blue-800 mt-0 font-bold border-b border-blue-100 pb-2"><i class="fas fa-file-code mr-2"></i> Phase 3: Test Design & Preparation (ออกแบบและเตรียมการทดสอบ)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> เลือกวิธีตรวจ ออกแบบกรณีทดสอบ และเตรียมข้อมูลหรือเครื่องมือให้เหมาะกับความเสี่ยง</p>
+                        <p class="text-sm text-slate-700">ทีมอาจบันทึก Scenario, Test Case, exploratory charter หรือ automated checks ตามความเสี่ยงและวิธีทำงาน รายละเอียดควรพอให้ผู้เกี่ยวข้องเข้าใจเป้าหมายและทำซ้ำได้เมื่อจำเป็น</p>
+                        <div class="bg-blue-50 text-blue-900 p-2 rounded mt-2 text-sm border border-blue-200"><strong>ผลที่อาจได้:</strong> ชุดทดสอบ เอกสารประกอบ หรือการทดสอบอัตโนมัติ ตามบริบท</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-blue-800 mt-0 font-bold border-b border-blue-100 pb-2"><i class="fas fa-server mr-2"></i> Phase 4: Test Environment Setup (เตรียมสภาพแวดล้อม)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> เตรียมระบบ บัญชี สิทธิ์ และข้อมูลให้เหมาะกับการทดสอบ โดยบันทึกความต่างจาก Production ที่อาจมีผลต่อผลลัพธ์</p>
+                        <p class="text-sm text-slate-700">ทีมอาจเริ่มด้วย <strong>Smoke Testing</strong> ซึ่งเป็นชุดตรวจสอบสั้นๆ ของฟังก์ชันสำคัญเพื่อดูว่าบิลด์พร้อมทดสอบต่อหรือไม่ เกณฑ์หยุดและส่งกลับขึ้นกับข้อตกลงของทีม</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-red-800 mt-0 font-bold border-b border-red-100 pb-2"><i class="fas fa-bug mr-2"></i> Phase 5: Test Execution (ลงมือทดสอบ)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> ดำเนินการตรวจตามแนวทางที่เลือก บันทึกผลและหลักฐาน แล้วรายงานข้อบกพร่องที่พบ</p>
+                        <ul class="text-sm text-slate-700 list-disc pl-5">
+                            <li><strong>Log Defect:</strong> บันทึกข้อบกพร่องใน Issue tracker หรือช่องทางที่ทีมใช้ พร้อมขั้นตอนทำซ้ำ ผลที่คาด ผลจริง และสภาพแวดล้อมที่เกี่ยวข้อง</li>
+                            <li><strong>Retesting:</strong> เมื่อมี build ที่รวมการแก้ไขแล้ว ให้ตรวจจุดที่พบปัญหาอีกครั้งตามเกณฑ์ที่ตกลงกัน</li>
+                            <li><strong>Regression Testing:</strong> เลือกตรวจส่วนที่อาจได้รับผลจากการเปลี่ยนแปลงตามความเสี่ยง ไม่จำเป็นต้องรันทดสอบทุกอย่างทุกครั้ง</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-green-800 mt-0 font-bold border-b border-green-100 pb-2"><i class="fas fa-flag-checkered mr-2"></i> Phase 6: Test Cycle Closure (สรุปผล)</h3>
+                        <p class="text-sm text-slate-700"><strong>เป้าหมาย:</strong> สรุปขอบเขตที่ทดสอบ ผลที่พบ ความเสี่ยงที่ยังเหลือ และข้อจำกัด เพื่อให้ผู้มีอำนาจตัดสินใจใช้ข้อมูลประกอบการปล่อยซอฟต์แวร์ การทดสอบไม่สามารถรับประกันว่าไม่มีบั๊ก</p>
+                        <p class="text-sm text-slate-700">ทีมอาจทบทวนบทเรียนและปรับปรุงวิธีทำงานในกิจกรรม Retrospective ซึ่งไม่จำเป็นต้องเกิดพร้อมกับการปิดรอบทดสอบ</p>
+                        <div class="bg-green-50 text-green-900 p-2 rounded mt-2 text-sm border border-green-200"><strong>ผลที่อาจได้:</strong> สรุปผลทดสอบหรือบันทึกการตัดสินใจ ตามความเหมาะสมของโครงการ</div>
+                    </div>
+                </div>
+            `,
+            'risk_testing': `
+                <h1 class="text-slate-900 border-b-2 border-amber-500 pb-2 inline-block">จัดลำดับการทดสอบตามความเสี่ยง</h1>
+                <p class="text-slate-600 mt-4 text-lg">เวลาทดสอบและข้อมูลมีจำกัด การจัดลำดับตามความเสี่ยงช่วยให้ทีมเริ่มจากสิ่งที่อาจสร้างผลกระทบรุนแรงหรือมีโอกาสผิดพลาดสูง โดยไม่แปลว่ารายการที่ทดสอบน้อยกว่าจะปลอดภัยแน่นอน</p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">แนวทางใช้งาน</h2>
+                <ol class="list-decimal pl-5 space-y-3 text-sm text-slate-700">
+                    <li><strong>ระบุสิ่งที่อาจผิดพลาด:</strong> พิจารณาฟีเจอร์ ข้อมูล การเชื่อมต่อ ผู้ใช้ และการเปลี่ยนแปลงครั้งนี้</li>
+                    <li><strong>ประเมินผลกระทบและโอกาส:</strong> ใช้หลักฐานที่มี เช่น ความซับซ้อน ประวัติปัญหา จำนวนผู้ใช้ และผลต่อธุรกิจ ความแม่นยำของข้อมูลหรือความปลอดภัย</li>
+                    <li><strong>เลือกการตอบสนอง:</strong> กำหนดการทดสอบ ผู้รับผิดชอบ ข้อมูลที่ต้องใช้ และระดับความลึกตามความสำคัญ</li>
+                    <li><strong>ทบทวนเมื่อมีข้อมูลใหม่:</strong> ปรับลำดับหลังพบข้อบกพร่อง เปลี่ยนขอบเขต หรือมีการเปลี่ยนแปลงระบบ</li>
+                    <li><strong>สื่อสารความเสี่ยงคงเหลือ:</strong> แจ้งสิ่งที่ทดสอบแล้ว สิ่งที่ยังไม่ได้ทดสอบ เหตุผล และข้อจำกัดให้ผู้ตัดสินใจทราบ</li>
+                </ol>
+
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 my-6">
+                    <h2 class="text-amber-800 mt-0 font-bold">ตัวอย่างระบบชำระเงิน</h2>
+                    <p class="text-sm text-amber-900">การสร้างคำสั่งซื้อซ้ำหรือแสดงยอดผิดอาจกระทบเงินและความเชื่อมั่น จึงอาจให้ความสำคัญกับยอดรวม การป้องกันรายการซ้ำ สถานะชำระเงิน การหมดเวลา และการกู้คืนเมื่อผู้ให้บริการไม่ตอบสนอง ก่อนรายละเอียดตกแต่งที่มีผลกระทบน้อยกว่า ลำดับจริงต้องพิจารณากติกาธุรกิจ ขอบเขต และข้อมูลจากทีม</p>
+                    <p class="text-sm text-amber-900 mb-0">สูตรคะแนน เช่น ผลกระทบ × โอกาสเกิด ใช้เป็นเครื่องมือสนทนาได้ แต่ไม่ใช่สูตรสากลหรือความน่าจะเป็นที่แม่นยำโดยอัตโนมัติ</p>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">รายงานที่ช่วยตัดสินใจ</h2>
+                <p class="text-sm text-slate-700">สรุปขอบเขต เวอร์ชันและสภาพแวดล้อม ผลสำคัญ ข้อบกพร่องที่ยังเปิดอยู่ ความเสี่ยงคงเหลือ และข้อจำกัดของข้อมูลหรือเครื่องมือ จำนวน test case ที่ผ่านเพียงอย่างเดียวไม่ใช่หลักฐานว่าระบบพร้อมใช้งาน</p>
+            `,
+            'test_design': `
+                <h1 class="text-slate-900 border-b-2 border-teal-500 pb-2 inline-block">เทคนิคออกแบบการทดสอบ</h1>
+                <p class="text-slate-600 mt-4 text-lg">เทคนิคออกแบบการทดสอบช่วยให้เลือกกรณีที่มีคุณค่าได้อย่างเป็นระบบและลดงานซ้ำ แต่ไม่สามารถรับประกันการครอบคลุมทุกความเสี่ยงหรือทุกบั๊กได้ ควรเลือกเทคนิคตามกฎของระบบและข้อมูลที่มี</p>
+
+                <h3 class="text-teal-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-th-large mr-2"></i> 1. Equivalence Partitioning (EP) - การแบ่งกลุ่มข้อมูล</h3>
+                <p class="text-sm text-slate-700">แบ่งข้อมูลออกเป็นกลุ่มที่คาดว่าจะถูกจัดการด้วยกติกาคล้ายกัน แล้วเลือกตัวแทนจากแต่ละกลุ่ม การเลือกหนึ่งค่าต่อกลุ่มเป็นเพียงจุดเริ่มต้น ควรเพิ่มกรณีเมื่อความเสี่ยงหรือความซับซ้อนสูง</p>
+                <div class="bg-slate-100 p-4 rounded-lg font-mono text-sm border border-slate-300">
+                    <p class="mb-2"><strong>โจทย์:</strong> โปรแกรมรับรหัสผ่านยาว 8 ถึง 15 ตัวอักษร</p>
+                    <ul class="list-disc pl-5">
+                        <li class="text-red-600">กลุ่ม 1 (Invalid): น้อยกว่า 8 (เช่น 5 ตัวอักษร) -> คาดหวัง: Error</li>
+                        <li class="text-green-600">กลุ่ม 2 (Valid): 8 ถึง 15 (เช่น 10 ตัวอักษร) -> คาดหวัง: Pass</li>
+                        <li class="text-red-600">กลุ่ม 3 (Invalid): มากกว่า 15 (เช่น 20 ตัวอักษร) -> คาดหวัง: Error</li>
+                    </ul>
+                    <p class="mt-2 text-indigo-700"><strong>ตัวอย่างเบื้องต้น:</strong> เลือกตัวแทนจากสามกลุ่มนี้ แล้วเพิ่มกรณีขอบและเงื่อนไขอื่นตามข้อกำหนด</p>
+                </div>
+
+                <h3 class="text-teal-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-arrows-alt-h mr-2"></i> 2. Boundary Value Analysis (BVA) - การวิเคราะห์ค่าขอบ</h3>
+                <p class="text-sm text-slate-700">ข้อผิดพลาดอาจเกิดตรงค่าขอบเขตที่ยอมรับได้ เทคนิคนี้จึงเลือกทดสอบค่าต่ำกว่าขอบ ค่าที่ขอบ และค่าสูงกว่าขอบ (ตามชุดย่อยที่เทคนิคหรือทีมกำหนด) ตัวอย่างนี้แสดงการตรวจค่าข้างเคียงของขอบทั้งสอง</p>
+                <div class="bg-slate-100 p-4 rounded-lg font-mono text-sm border border-slate-300">
+                    <p class="mb-2"><strong>โจทย์เดิม:</strong> 8 ถึง 15 ตัวอักษร</p>
+                    <p>ขอบล่างคือ 8 -> เทสค่า: <span class="text-red-500 font-bold">7</span>, <span class="text-green-600 font-bold">8</span>, <span class="text-green-600 font-bold">9</span></p>
+                    <p>ขอบบนคือ 15 -> เทสค่า: <span class="text-green-600 font-bold">14</span>, <span class="text-green-600 font-bold">15</span>, <span class="text-red-500 font-bold">16</span></p>
+                    <p class="mt-2 text-indigo-700"><strong>รวม Test Case:</strong> เราจะเทสเฉพาะความยาว 7, 8, 9, 14, 15, 16</p>
+                </div>
+
+                <h3 class="text-teal-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-table mr-2"></i> 3. Decision Table (ตารางการตัดสินใจ)</h3>
+                <p class="text-sm text-slate-700">เมื่อต้องตรวจหลายเงื่อนไขและผลลัพธ์ที่สัมพันธ์กัน ตารางตัดสินใจช่วยแสดงชุดกฎและค้นหากรณีที่ขาดได้ ตัวอย่างสมมติว่า VIP ได้ลด 20% เมื่อซื้อครบ 1,000 บาท และลด 10% เมื่อซื้อไม่ถึง ส่วนผู้ใช้ทั่วไปได้ลด 5% เมื่อซื้อครบเกณฑ์และไม่ได้ลดเมื่อซื้อไม่ถึง</p>
+                <div class="overflow-x-auto mt-4">
+                    <table class="min-w-full bg-white border border-slate-200 text-sm text-left">
+                        <thead class="bg-slate-100">
+                            <tr><th class="p-3 border-b">เงื่อนไข (Conditions)</th><th class="p-3 border-b border-l text-center">Rule 1</th><th class="p-3 border-b border-l text-center">Rule 2</th><th class="p-3 border-b border-l text-center">Rule 3</th><th class="p-3 border-b border-l text-center">Rule 4</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-3 border-b">เป็น VIP Member</td><td class="p-3 border-b border-l text-center text-green-600 font-bold">T</td><td class="p-3 border-b border-l text-center text-green-600 font-bold">T</td><td class="p-3 border-b border-l text-center text-red-500 font-bold">F</td><td class="p-3 border-b border-l text-center text-red-500 font-bold">F</td></tr>
+                            <tr><td class="p-3 border-b">ซื้อครบ 1,000 บาท</td><td class="p-3 border-b border-l text-center text-green-600 font-bold">T</td><td class="p-3 border-b border-l text-center text-red-500 font-bold">F</td><td class="p-3 border-b border-l text-center text-green-600 font-bold">T</td><td class="p-3 border-b border-l text-center text-red-500 font-bold">F</td></tr>
+                            <tr class="bg-indigo-50"><td class="p-3 font-bold text-indigo-800">ผลลัพธ์ (Action)</td><td class="p-3 border-l text-center font-bold text-indigo-600">ลด 20%</td><td class="p-3 border-l text-center font-bold text-indigo-600">ลด 10%</td><td class="p-3 border-l text-center font-bold text-indigo-600">ลด 5%</td><td class="p-3 border-l text-center text-slate-500">ไม่ได้ลด</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-teal-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-project-diagram mr-2"></i> 4. State Transition (สถานะและการเปลี่ยนแปลง)</h3>
+                <p class="text-sm text-slate-700">ใช้เมื่อระบบมีสถานะและกฎเปลี่ยนสถานะชัดเจน เช่น คำสั่งซื้อที่รอชำระ ชำระแล้ว หรือยกเลิก ทดสอบทั้งการเปลี่ยนสถานะที่อนุญาตและไม่อนุญาตตามข้อกำหนด ตัวอย่างเช่น หากห้ามยกเลิกหลังชำระเงิน ต้องตรวจทั้งผลตอบกลับและผลที่เกิดกับข้อมูลหรือการคืนเงิน</p>
+
+                <h3 class="text-teal-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-random mr-2" aria-hidden="true"></i> 5. Pairwise และ Use Case Testing</h3>
+                <p class="text-sm text-slate-700"><strong>Pairwise testing</strong> เลือกชุดข้อมูลเพื่อตรวจคู่ค่าของปัจจัยต่างๆ เช่น เบราว์เซอร์ ระบบปฏิบัติการ และภาษา ช่วยลดจำนวนชุดผสมเมื่อมีหลายปัจจัย แต่ไม่ครอบคลุมทุก combination หรือข้อผิดพลาดที่เกิดจากปฏิสัมพันธ์ของหลายปัจจัยพร้อมกัน จึงควรเพิ่มกรณีตามความเสี่ยง</p>
+                <p class="text-sm text-slate-700"><strong>Use case testing</strong> ตรวจเส้นทางใช้งานตามเป้าหมายของผู้ใช้ ทั้งเส้นทางหลัก ทางเลือก และกรณีผิดพลาด เช่น สั่งซื้อสำเร็จ ชำระเงินไม่ผ่าน หรือยกเลิกระหว่างดำเนินการ โดยยึดกติกาและขอบเขตของระบบ</p>
+            `,
+            'accessibility': `
+                <h1 class="text-slate-900 border-b-2 border-emerald-500 pb-2 inline-block">การทดสอบ Accessibility เบื้องต้น</h1>
+                <p class="text-slate-600 mt-4 text-lg">Accessibility คือการทำให้ผู้ใช้ที่มีความสามารถและวิธีใช้งานแตกต่างกันเข้าถึงเนื้อหาและทำงานสำคัญได้ เช่น ใช้แป้นพิมพ์ โปรแกรมอ่านหน้าจอ การขยายข้อความ หรือคำบรรยาย เป้าหมายคือค้นหาอุปสรรคและส่งข้อมูลให้ทีมแก้ ไม่ใช่เพียงทำให้เครื่องมืออัตโนมัติรายงานผ่าน</p>
+
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 my-6">
+                    <h2 class="text-emerald-800 mt-0 font-bold">ตรวจอะไรได้บ้าง?</h2>
+                    <ul class="list-disc pl-5 space-y-3 text-sm text-emerald-900 mb-0">
+                        <li><strong>แป้นพิมพ์:</strong> ไปยังทุกส่วนที่โต้ตอบได้ด้วย Tab และ Shift+Tab ใช้ Enter หรือ Space ได้ตามชนิด คำสั่งไม่ติดกับดัก และตำแหน่งโฟกัสมองเห็นได้</li>
+                        <li><strong>โครงสร้าง:</strong> หัวข้อเรียงตามลำดับ มีชื่อที่สื่อความหมาย ลิงก์และปุ่มบอกจุดหมายหรือการกระทำ</li>
+                        <li><strong>ฟอร์ม:</strong> ช่องกรอกมีป้ายกำกับ คำแนะนำและข้อผิดพลาดเชื่อมกับช่องที่เกี่ยวข้อง และไม่สื่อความหมายด้วยสีอย่างเดียว</li>
+                        <li><strong>การนำเสนอ:</strong> ข้อความขยายได้และยังอ่านได้ สีข้อความตัดกับพื้นหลัง ภาพที่ให้ข้อมูลมีข้อความทดแทน</li>
+                        <li><strong>การอ่านด้วยเทคโนโลยีช่วยเหลือ:</strong> ทดลองเส้นทางสำคัญด้วยโปรแกรมอ่านหน้าจออย่างน้อยหนึ่งชุด และตรวจชื่อ บทบาท สถานะ และลำดับที่ประกาศ</li>
+                        <li><strong>ส่วนที่เปลี่ยนแปลง:</strong> ตรวจ dialog, เมนู, ข้อความแจ้งเตือน และการอัปเดตผลลัพธ์ว่าจัดการโฟกัสและแจ้งผู้ใช้เหมาะสม</li>
+                    </ul>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ใช้เครื่องมือหลายแบบ</h2>
+                <p class="text-sm text-slate-700">เครื่องมือตรวจอัตโนมัติช่วยค้นหาปัญหาบางชนิด เช่น ชื่อที่ขาดหรือความต่างสีเบื้องต้น แต่ตรวจแทนการใช้แป้นพิมพ์ โปรแกรมอ่านหน้าจอ การทดสอบกับผู้ใช้ หรือการประเมินตาม WCAG ทั้งหมดไม่ได้ บันทึกเบราว์เซอร์ อุปกรณ์ เทคโนโลยีช่วยเหลือ ขั้นตอน ผลที่คาดและผลจริงให้ทำซ้ำได้</p>
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-200 mt-6">
+                    <h2 class="text-blue-800 mt-0 font-bold">มาตรฐานอ้างอิง</h2>
+                    <p class="text-sm text-blue-900 mb-0">เมื่อโครงการเลือกใช้ WCAG ให้ระบุเวอร์ชัน ระดับ และขอบเขตที่จะประเมินให้ชัดเจน WCAG 2.2 เป็นแนวทาง W3C แต่การผ่านรายการเบื้องต้นไม่เท่ากับการรับรองว่าเว็บเข้าถึงได้ครบถ้วน</p>
+                </div>
+            `,
+            'security_testing': `
+                <h1 class="text-slate-900 border-b-2 border-red-500 pb-2 inline-block">การทดสอบความปลอดภัยเว็บเบื้องต้น</h1>
+                <p class="text-slate-600 mt-4 text-lg">Security testing ตรวจว่าการควบคุมที่ตกลงไว้ปกป้องข้อมูลและการทำงานสำคัญได้หรือไม่ เช่น การยืนยันตัวตน สิทธิ์เข้าถึง เซสชัน และการจัดการข้อมูล ขอบเขตและระดับการตรวจขึ้นกับความเสี่ยง ระบบ และผู้เชี่ยวชาญที่เกี่ยวข้อง</p>
+
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200 my-6">
+                    <h2 class="text-red-800 mt-0 font-bold">เริ่มจากขอบเขตที่ได้รับอนุญาต</h2>
+                    <p class="text-sm text-red-900 mb-0">ก่อนทดสอบ ให้ยืนยันเป็นลายลักษณ์อักษรว่าระบบใด ทดสอบเมื่อใด ด้วยบัญชีและเครื่องมือใด มีข้อห้าม อัตราการส่งคำขอ และช่องทางติดต่อเมื่อพบปัญหาอย่างไร ใช้เฉพาะสภาพแวดล้อมและข้อมูลที่อนุมัติ การทดสอบระบบจริงทำได้ก็ต่อเมื่อได้รับอนุญาตและมีมาตรการควบคุมชัดเจน</p>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ประเด็นที่ทีมอาจช่วยตรวจ</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">การยืนยันตัวตนและเซสชัน</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจการเข้าสู่ระบบ ออกจากระบบ รีเซ็ตรหัสผ่าน และหมดอายุตามข้อกำหนด รวมถึงการจัดการเซสชันเมื่อเปลี่ยนบัญชีหรือสิทธิ์</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">การอนุญาตและสิทธิ์</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ใช้บัญชีทดสอบที่มีบทบาทต่างกันตรวจว่าผู้ใช้ทำได้เฉพาะสิ่งที่ได้รับสิทธิ์ และข้อมูลของบัญชีหนึ่งไม่แสดงให้อีกบัญชีเห็นโดยไม่ตั้งใจ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">ข้อมูลและข้อความผิดพลาด</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ตรวจว่าข้อมูลที่ระบบรับหรือส่งเป็นไปตามกติกา และ response, error, log หรือภาพหลักฐานไม่เปิดเผย token รหัสผ่าน ข้อมูลส่วนบุคคล หรือรายละเอียดภายในเกินจำเป็น</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-lg">การตั้งค่าและการเชื่อมต่อ</strong>
+                        <p class="text-sm text-slate-600 mt-1 mb-0">ร่วมตรวจข้อกำหนดของ TLS, CORS, cookies, API keys และ dependency ตามสถาปัตยกรรม โดยประสานทีมที่ดูแลระบบและใช้ checklist ที่โครงการเลือก</p>
+                    </div>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">เครื่องมือเป็นตัวช่วย ไม่ใช่ข้อสรุป</h2>
+                <p class="text-sm text-slate-700">เครื่องสแกนอาจช่วยชี้จุดที่ควรตรวจเพิ่ม แต่ผลอาจมีทั้ง false positive และสิ่งที่ตรวจไม่พบ ให้ยืนยันด้วยหลักฐานและความเข้าใจระบบ การทดสอบเจาะระบบหรือใช้ payload ที่อาจเปลี่ยนข้อมูลต้องอยู่ในขอบเขตที่ได้รับอนุญาตชัดเจน และควรให้ผู้เชี่ยวชาญด้านความปลอดภัยนำเมื่อจำเป็น</p>
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-200 mt-6">
+                    <h2 class="text-blue-800 mt-0 font-bold">แนวทางอ้างอิง</h2>
+                    <p class="text-sm text-blue-900 mb-0">OWASP Web Security Testing Guide อธิบายแนวทางและกรณีตรวจเว็บ ส่วน Application Security Verification Standard (ASVS) ช่วยกำหนดข้อกำหนดด้านความปลอดภัยที่ควรตรวจ เลือกเวอร์ชันและระดับให้ตรงกับโครงการ</p>
+                </div>
+            `,
+            'bug_lifecycle': `
+                <h1 class="text-slate-900 border-b-2 border-red-500 pb-2 inline-block">Defect & Bug Life Cycle</h1>
+                <p class="text-slate-600 mt-4 text-lg">สถานะและขั้นตอนของข้อบกพร่องขึ้นกับ workflow ที่ทีมตั้งไว้ ตัวอย่างนี้เป็นรูปแบบหนึ่งสำหรับสื่อสารความคืบหน้า ไม่ใช่ลำดับบังคับของ Jira หรือทุกองค์กร</p>
+
+                <div class="relative pl-8 border-l-4 border-slate-300 space-y-8 my-8 ml-4">
+                    <!-- NEW -->
+                    <div class="relative">
+                        <div class="absolute -left-[44px] top-0 w-8 h-8 rounded-full bg-red-500 border-4 border-white flex items-center justify-center text-white font-bold text-sm shadow-md">1</div>
+                        <h3 class="mt-0 mb-1 text-red-600 font-bold text-xl">NEW (เจอบั๊กใหม่)</h3>
+                        <p class="text-sm text-slate-700 mb-0">ผู้ทดสอบหรือสมาชิกทีมบันทึกสิ่งที่พบ พร้อมขั้นตอนทำซ้ำ ผลที่คาด ผลจริง สภาพแวดล้อม และภาพหรือหลักฐานที่จำเป็น โดยปกปิดข้อมูลลับก่อนแนบ</p>
+                    </div>
+                    
+                    <!-- ASSIGNED -->
+                    <div class="relative">
+                        <div class="absolute -left-[44px] top-0 w-8 h-8 rounded-full bg-orange-500 border-4 border-white flex items-center justify-center text-white font-bold text-sm shadow-md">2</div>
+                        <h3 class="mt-0 mb-1 text-orange-600 font-bold text-xl">ASSIGNED / IN PROGRESS</h3>
+                        <p class="text-sm text-slate-700 mb-0">ทีมตรวจสอบรายละเอียด ทำซ้ำ และตัดสินใจมอบหมาย จัดลำดับ หรือขอข้อมูลเพิ่ม สถานะอาจใช้ชื่ออย่าง Open, Triaged หรือ In Progress</p>
+                    </div>
+                    
+                    <!-- FIXED -->
+                    <div class="relative">
+                        <div class="absolute -left-[44px] top-0 w-8 h-8 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center text-white font-bold text-sm shadow-md">3</div>
+                        <h3 class="mt-0 mb-1 text-blue-600 font-bold text-xl">FIXED / RESOLVED (รอตรวจยืนยัน)</h3>
+                        <p class="text-sm text-slate-700 mb-0">มีการแก้ไขหรือการตัดสินใจที่คาดว่าจะจัดการปัญหาแล้ว ทีมบันทึกเวอร์ชันและสภาพแวดล้อมที่พร้อมตรวจยืนยัน</p>
+                    </div>
+
+                    <!-- RETEST -->
+                    <div class="relative">
+                        <div class="absolute -left-[44px] top-0 w-8 h-8 rounded-full bg-purple-500 border-4 border-white flex items-center justify-center text-white font-bold text-sm shadow-md">4</div>
+                        <h3 class="mt-0 mb-1 text-purple-600 font-bold text-xl">RETEST (การตัดสินชะตา)</h3>
+                        <p class="text-sm text-slate-700 mb-3">ตรวจซ้ำเพื่อดูว่าปัญหาที่รายงานได้รับการแก้หรือไม่ และพิจารณาทดสอบผลกระทบที่เกี่ยวข้องด้วย การปิดหรือเปิดตั๋วใหม่เป็นไปตามขั้นตอนของทีม:</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <strong class="text-green-700 flex items-center text-lg"><i class="fas fa-check-circle mr-2"></i> ทางที่ 1: CLOSED</strong>
+                                <p class="text-sm text-green-900 mt-2">ยืนยันผลตามเกณฑ์ที่ทีมตกลงและตั้งสถานะตาม workflow หากข้อมูลยังไม่พอหรือเงื่อนไขเปลี่ยน ให้บันทึกเหตุผลไว้</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <strong class="text-red-700 flex items-center text-lg"><i class="fas fa-redo-alt mr-2"></i> ทางที่ 2: RE-OPENED</strong>
+                                <p class="text-sm text-red-900 mt-2">ปัญหาเดิมยังเกิดซ้ำหรือหลักฐานใหม่แสดงว่ายังไม่ผ่านเกณฑ์ จึงบันทึกผลแล้วส่งกลับตาม workflow หากพบปัญหาใหม่ที่ต่างกัน อาจเปิดตั๋วแยก</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-100 p-5 rounded-xl border border-slate-300 mt-8">
+                <h3 class="text-slate-800 mt-0 font-bold border-b border-slate-200 pb-2"><i class="fas fa-ghost text-slate-500 mr-2" aria-hidden="true"></i> สถานะอื่นที่อาจพบ</h3>
+                    <ul class="text-sm text-slate-700 space-y-2 mt-3">
+                        <li><strong>DUPLICATE:</strong> เชื่อมไปยังรายการที่ติดตามปัญหาเดียวกัน พร้อมเก็บหลักฐานหรือบริบทที่ต่างกันหากมี</li>
+                        <li><strong>DEFERRED:</strong> ตกลงเลื่อนการแก้ไขไปภายหลังโดยผู้เกี่ยวข้อง ควรบันทึกเหตุผล ความเสี่ยง เจ้าของการตัดสินใจ และรอบที่จะทบทวน ไม่ได้แปลว่าปลอดภัยที่จะปล่อยขึ้นระบบจริง</li>
+                        <li><strong>REJECTED / NOT A BUG:</strong> ทีมเห็นว่าไม่ใช่ข้อบกพร่องตามเกณฑ์ที่ตกลงกัน ควรอ้างอิงข้อกำหนดและบันทึกเหตุผล หากข้อกำหนดยังคลุมเครือให้หารือกับผู้รับผิดชอบผลิตภัณฑ์</li>
+                    </ul>
+                </div>
+            `,
+            'automation_strategy': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">เมื่อไหร่ควรทำ Automation? (และเมื่อไหร่ที่ไม่ควร)</h1>
+                <p class="text-slate-600 mt-4 text-lg">การทำ automation มีต้นทุนทั้งการสร้าง ข้อมูล สภาพแวดล้อม การดูแล และการแก้เมื่อระบบเปลี่ยน จึงควรเลือกงานที่ทำซ้ำได้ ให้ผลตรวจชัด และคุ้มกับต้นทุนตลอดอายุการใช้งาน</p>
+
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 my-6">
+                    <h2 class="text-indigo-800 mt-0 font-bold">เช็กลิสต์ก่อนเริ่ม</h2>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-indigo-900 mb-0">
+                        <li>งานนี้ทำซ้ำบ่อยหรือครอบคลุมความเสี่ยงสูงไหม?</li>
+                        <li>ผลที่คาดหวังสังเกตและตรวจได้อย่างน่าเชื่อถือไหม?</li>
+                        <li>เตรียมข้อมูลและคืนสภาพแวดล้อมให้ทดสอบซ้ำได้หรือยัง?</li>
+                        <li>ต้นทุนการเขียนและดูแลสมเหตุสมผลเมื่อเทียบกับเวลาที่ประหยัดได้หรือไม่?</li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6 my-8">
+                    <div class="flex-1 bg-green-50 border-t-4 border-green-500 p-6 rounded-b-xl shadow-sm">
+                        <h3 class="text-green-800 mt-0 font-bold text-xl"><i class="fas fa-check-circle mr-2"></i> สิ่งที่ควร Automate</h3>
+                        <ul class="text-sm text-green-900 space-y-3 pl-5 list-disc mt-4">
+                            <li><strong>Regression ที่ทำซ้ำบ่อย:</strong> ชุดทดสอบที่มีผลลัพธ์คาดหวังชัดและมีมูลค่าพอให้รันเป็นประจำ</li>
+                            <li><strong>เส้นทางเสี่ยงสูง:</strong> เช่น เข้าสู่ระบบ สร้างคำสั่งซื้อ หรือชำระเงิน เมื่อข้อมูลทดสอบและการคืนสภาพแวดล้อมพร้อม</li>
+                            <li><strong>ชุดข้อมูลหลายค่า:</strong> ตรวจรูปแบบหรือกฎเดิมกับตัวอย่างที่ออกแบบไว้ โดยไม่เพิ่มข้อมูลซ้ำซ้อนเกินจำเป็น</li>
+                            <li><strong>งานตรวจซ้ำในระดับเหมาะสม:</strong> เลือกระดับที่ให้ผลคุ้มค่า เช่น unit, API หรือ UI ตามจุดเสี่ยง</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex-1 bg-red-50 border-t-4 border-red-500 p-6 rounded-b-xl shadow-sm">
+                        <h3 class="text-red-800 mt-0 font-bold text-xl"><i class="fas fa-times-circle mr-2"></i> สิ่งที่ไม่ควร Automate</h3>
+                        <ul class="text-sm text-red-900 space-y-3 pl-5 list-disc mt-4">
+                            <li><strong>งานที่ทำครั้งเดียวหรือเปลี่ยนบ่อย:</strong> พิจารณาต้นทุนการดูแลก่อน หากความเสี่ยงสูงก็อาจยังคุ้มที่จะ automate</li>
+                            <li><strong>การตัดสินที่ต้องใช้คน:</strong> automation ช่วยตรวจเกณฑ์หรือรวบรวมหลักฐานได้ แต่ไม่แทนการประเมินประสบการณ์ผู้ใช้ที่ซับซ้อนทั้งหมด</li>
+                            <li><strong>Exploratory Testing:</strong> ผู้ทดสอบยังต้องเรียนรู้และตัดสินใจระหว่างทดสอบ เครื่องมืออาจช่วยเก็บหลักฐานหรือทำขั้นตอนซ้ำได้</li>
+                            <li><strong>การทดสอบ Performance:</strong> ใช้เครื่องมือและรูปแบบภาระงานเฉพาะ ไม่ควรแทนด้วยการเปิดเบราว์เซอร์จำนวนมากโดยไม่วางแผน</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white p-8 rounded-2xl relative overflow-hidden shadow-xl mt-8">
+                    <div class="absolute -right-10 -top-10 text-slate-800 opacity-50 text-9xl"><i class="fas fa-caret-up"></i></div>
+                    <div class="relative z-10">
+                        <h2 class="text-indigo-400 mt-0 font-heading text-2xl border-b border-slate-700 pb-2">The Test Automation Pyramid</h2>
+                        <p class="text-sm text-slate-300 mt-4 mb-6">Test Automation Pyramid เป็นแบบจำลองช่วยคุยเรื่องระดับการทดสอบ ไม่ใช่สัดส่วนบังคับหรือสูตรที่ใช้ได้กับทุกสถาปัตยกรรม</p>
+                        
+                        <div class="flex flex-col items-center space-y-2">
+                            <!-- Top -->
+                            <div class="w-1/3 bg-red-500 text-center py-3 rounded-t-lg font-bold text-white shadow">UI / E2E</div>
+                            <!-- Middle -->
+                            <div class="w-2/3 bg-yellow-500 text-center py-3 font-bold text-slate-900 shadow">API / Integration</div>
+                            <!-- Bottom -->
+                            <div class="w-full bg-green-500 text-center py-3 rounded-b-lg font-bold text-slate-900 shadow">Unit / Component</div>
+                        </div>
+
+                        <ul class="text-sm text-slate-300 space-y-2 mt-6">
+                            <li><strong class="text-green-400">Unit / Component:</strong> มักให้ feedback เร็วและแยกหาสาเหตุได้ง่าย เหมาะกับการตรวจตรรกะในขอบเขตแคบ</li>
+                            <li><strong class="text-yellow-400">API / Integration:</strong> ตรวจสัญญาและการทำงานร่วมกันโดยไม่ต้องขับผ่าน UI ทุกครั้ง</li>
+                            <li><strong class="text-red-400">UI / E2E:</strong> ตรวจเส้นทางสำคัญใกล้เคียงการใช้งานจริง แต่ต้องเตรียมข้อมูลและดูแลสภาพแวดล้อม</li>
+                            <li>เลือกระดับตามสถาปัตยกรรม ความเสี่ยง และจุดที่ให้ feedback ได้เร็ว ไม่ต้องทำสัดส่วนตามรูปนี้</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            'playwright': `
+                <h1 class="text-slate-900 border-b-2 border-blue-500 pb-2 inline-block">Playwright สำหรับ UI/E2E Testing</h1>
+                <p class="text-slate-600 mt-4 text-lg">Playwright เป็น framework สำหรับทดสอบเว็บที่มี API ใน JavaScript/TypeScript, Python, Java และ .NET ใช้ทดสอบ Chromium, Firefox และ WebKit เลือกเครื่องมือโดยดูภาษา ความถนัดของทีม เบราว์เซอร์เป้าหมาย และสภาพแวดล้อมของโครงการ</p>
+
+                <h2 class="text-blue-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-compass mr-2" aria-hidden="true"></i> จุดเด่นและขอบเขตการใช้งาน</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block mb-2 text-lg"><i class="fas fa-window-maximize text-yellow-500 mr-2" aria-hidden="true"></i> 1. ทดสอบหลาย browser engine</strong>
+                        <p class="text-sm text-slate-600">ทดสอบด้วย Chromium, Firefox และ WebKit เพื่อค้นหาความต่างระหว่าง engine ได้ การรองรับเบราว์เซอร์และระบบปฏิบัติการจริงยังขึ้นกับการตั้งค่าและสภาพแวดล้อมที่เลือก</p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block mb-2 text-lg"><i class="fas fa-stopwatch text-green-500 mr-2"></i> 2. Auto-Waiting (รออัตโนมัติ)</strong>
+                        <p class="text-sm text-slate-600">ก่อนทำ action เช่น click จะตรวจเงื่อนไขที่เกี่ยวข้องกับการกระทำนั้น และ assertion แบบ web-first จะลองตรวจซ้ำตามเวลาที่กำหนด ช่วยลดการใช้เวลารอแบบตายตัว แต่ไม่ได้แก้ปัญหาการรอทุกชนิดหรือการออกแบบเทสที่ไม่แน่นอน</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block mb-2 text-lg"><i class="fas fa-network-wired text-purple-500 mr-2"></i> 3. Network Interception</strong>
+                        <p class="text-sm text-slate-600">Playwright สามารถดักจับ API ที่หน้าเว็บคุยกับหลังบ้านได้ เราสามารถสั่งให้มันจำลอง (Mock) ข้อมูลจากหลังบ้านได้เลยโดยไม่ต้องไปตั้งค่า Database จริง</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block mb-2 text-lg"><i class="fas fa-clone text-pink-500 mr-2"></i> 4. Browser Contexts</strong>
+                        <p class="text-sm text-slate-600">Browser contexts แยกคุกกี้และสถานะ session เพื่อจำลองผู้ใช้หลายคนได้ ส่วนการเปิดหลายแท็บใน context เดียวกันอาจใช้สถานะร่วมกัน จึงควรเลือก context ให้ตรงกับสถานการณ์ที่ต้องการทดสอบ</p>
+                    </div>
+                </div>
+
+                <h3 class="text-blue-800 mt-10 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-code mr-2"></i> ตัวอย่างโค้ด Playwright (TypeScript)</h3>
+                <p class="text-sm text-slate-600 mb-2">ตัวอย่างนี้สมมติว่าแอปมีฟอร์มที่ติดป้ายกำกับว่า “อีเมล” และ “รหัสผ่าน” กับหัวข้อหลังเข้าสู่ระบบชื่อ “บัญชีของฉัน” ตั้งค่า <code>baseURL</code> ให้ชี้ไปยังแอปทดสอบของทีมก่อนรัน</p>
+                <div class="bg-slate-900 p-6 rounded-xl shadow-xl overflow-x-auto relative group">
+                    <div class="absolute top-0 right-0 bg-slate-700 text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl text-slate-200 font-sans opacity-70 group-hover:opacity-100 transition">login.spec.ts</div>
+<pre class="font-mono text-sm leading-relaxed m-0"><code><span class="text-pink-400">import</span> { test, expect } <span class="text-pink-400">from</span> <span class="text-green-300">'@playwright/test'</span>;
+
+test(<span class="text-green-300">'ทดสอบระบบ Login ด้วยข้อมูลที่ถูกต้อง'</span>, <span class="text-blue-400">async</span> ({ page }) => {
+  <span class="text-slate-500">// 1. Navigate (มันจะรอให้หน้าเว็บโหลดเสร็จเอง)</span>
+  <span class="text-blue-400">await</span> page.<span class="text-yellow-200">goto</span>(<span class="text-green-300">'/login'</span>);
+
+  <span class="text-slate-500">// 2. Interact (ไม่ต้องสั่ง wait, มันจัดการให้)</span>
+  <span class="text-blue-400">await</span> page.<span class="text-yellow-200">getByLabel</span>(<span class="text-green-300">'อีเมล'</span>).<span class="text-yellow-200">fill</span>(process.env.E2E_USER ?? <span class="text-green-300">'tester@example.test'</span>);
+  <span class="text-blue-400">await</span> page.<span class="text-yellow-200">getByLabel</span>(<span class="text-green-300">'รหัสผ่าน'</span>).<span class="text-yellow-200">fill</span>(process.env.E2E_PASSWORD ?? <span class="text-green-300">'test-only-password'</span>);
+  <span class="text-blue-400">await</span> page.<span class="text-yellow-200">getByRole</span>(<span class="text-green-300">'button'</span>, { name: <span class="text-green-300">'เข้าสู่ระบบ'</span> }).<span class="text-yellow-200">click</span>();
+
+  <span class="text-slate-500">// 3. Assert (เช็คว่ามีกล่องข้อความ Welcome โผล่มา)</span>
+  <span class="text-blue-400">await</span> <span class="text-yellow-200">expect</span>(page.<span class="text-yellow-200">getByRole</span>(<span class="text-green-300">'heading'</span>, { name: <span class="text-green-300">'บัญชีของฉัน'</span> })).<span class="text-yellow-200">toBeVisible</span>();
+});</code></pre>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mt-4">
+                    <strong class="text-blue-800"><i class="fas fa-magic mr-2 text-blue-600" aria-hidden="true"></i> ข้อควรจำสำหรับมือใหม่:</strong>
+                    <p class="text-sm text-blue-900 mt-1 mb-0">ฟีเจอร์ <strong>Codegen</strong> ช่วยบันทึกการโต้ตอบและเสนอ locator/โค้ดตัวอย่างได้ ใช้เป็นร่างเริ่มต้นแล้วตรวจ locator, assertion, ข้อมูลลับ และความทนทานของเทสก่อนนำไปใช้จริง</p>
+                </div>
+            `,
+            'cypress': `
+                <h1 class="text-slate-900 border-b-2 border-emerald-500 pb-2 inline-block">Cypress (สำหรับงาน Frontend)</h1>
+                <p class="text-slate-600 mt-4 text-lg">Cypress เป็นชุดเครื่องมือทดสอบเว็บที่มี runner และเครื่องมือดูการทำงานระหว่างทดสอบ เหมาะกับทีมที่ต้องการ workflow ใน JavaScript/TypeScript และตรวจพฤติกรรมของแอปในเบราว์เซอร์ ควรเปรียบเทียบกับเครื่องมืออื่นตาม browser, ภาษา, สถาปัตยกรรม และข้อกำหนดของโครงการ</p>
+
+                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-200 my-8 shadow-sm">
+                    <h3 class="text-emerald-800 mt-0 font-bold text-xl"><i class="fas fa-heart text-red-400 mr-2"></i> จุดเด่นที่ทำให้ Cypress ครองใจผู้ใช้</h3>
+                    <ul class="text-sm text-emerald-900 space-y-3 pl-5 list-disc mt-4">
+                        <li><strong>Runner และการดีบัก:</strong> Test Runner แสดงคำสั่งและ snapshots ตามการตั้งค่า ช่วยตรวจย้อนกลับว่าหน้าเว็บอยู่ในสถานะใดระหว่างทดสอบ</li>
+                        <li><strong>Retry-ability:</strong> queries และ assertions บางชนิดลองซ้ำจนผ่านหรือหมดเวลา ช่วยลดการรอแบบตายตัว แต่ต้องเขียนเงื่อนไขและข้อมูลให้แน่นอน</li>
+                        <li><strong>Network:</strong> <code>cy.intercept()</code> ใช้สังเกตคำขอของแอป รอ ตรวจ หรือ stub คำตอบได้ การ stub เหมาะกับกรณีควบคุมสถานการณ์ แต่ไม่ยืนยันว่าบริการจริงทำงานถูกต้อง</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200 my-8 shadow-sm">
+                    <h3 class="text-red-800 mt-0 font-bold text-xl"><i class="fas fa-exclamation-triangle mr-2"></i> ข้อจำกัด (Trade-offs) ที่ต้องรู้</h3>
+                    <p class="text-sm text-red-900 mb-4">ไม่มีทูลไหนสมบูรณ์แบบ Cypress มีสถาปัตยกรรมที่ทำงาน "ภายในบราวเซอร์เดียวกัน" ทำให้เกิดข้อจำกัดทางเทคนิคบางอย่าง:</p>
+                    <ul class="text-sm text-red-900 space-y-3 pl-5 list-disc">
+                        <li><strong>ภาษา:</strong> Cypress ใช้ JavaScript/TypeScript เป็นหลัก หากทีมต้องการภาษาอื่น เครื่องมืออื่นอาจเหมาะกว่า</li>
+                        <li><strong>หลาย origin:</strong> การทดสอบข้าม origin ใน test เดียวต้องใช้ <code>cy.origin()</code> และทำตามข้อจำกัดของเบราว์เซอร์และ Cypress ส่วน cross-origin iframe ยังมีข้อจำกัดที่ควรตรวจในเอกสารรุ่นที่ใช้อยู่</li>
+                        <li><strong>หลายแท็บ:</strong> Cypress ไม่ได้มี workflow ทั่วไปสำหรับควบคุมหลายแท็บแบบเดียวกับเบราว์เซอร์อัตโนมัติบางตัว ควรออกแบบการตรวจตามสิ่งที่ต้องการยืนยัน และตรวจข้อจำกัดรุ่นปัจจุบัน</li>
+                    </ul>
+                </div>
+            `,
+            'pom': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">Design Pattern: Page Object Model (POM)</h1>
+                <p class="text-slate-600 mt-4 text-lg">Page Object Model (POM) เป็นรูปแบบหนึ่งในการรวมการโต้ตอบกับหน้าไว้ในโมดูลที่ใช้ซ้ำได้ วิธีนี้ช่วยลดการซ้ำของ locator และขั้นตอน แต่ไม่ใช่ข้อบังคับ บางชุดทดสอบอาจอ่านง่ายกว่าเมื่อใช้ helper แบบเล็กแทน class ขนาดใหญ่</p>
+
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 my-6 shadow-sm">
+                <h3 class="text-amber-800 mt-0 font-bold"><i class="fas fa-fire mr-2" aria-hidden="true"></i> เมื่อใด Page Object ช่วยได้</h3>
+                    <p class="text-sm text-amber-900 mb-0">เมื่อหลายเทสทำขั้นตอน Login ซ้ำกัน การแก้ไขชื่อฟิลด์หรือ flow อาจต้องตามแก้หลายจุด การรวมพฤติกรรมที่ใช้ซ้ำไว้ในที่เดียวช่วยลดงานซ้ำ แต่ควรเก็บ assertion สำคัญไว้ใกล้กับสิ่งที่ทดสอบเพื่อให้อ่านเหตุผลได้ชัด</p>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">วิธีแก้: Page Object Model</h2>
+                <p class="text-sm text-slate-700 mb-6">หลักการคือ <strong>"แยกโค้ดส่วนของหน้าจอ (UI Locator) ออกจาก โค้ดส่วนที่เป็นลอจิกการทดสอบ (Test Script)"</strong></p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- File 1 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-800 px-4 py-2 flex items-center justify-between">
+                            <span class="text-slate-300 text-xs font-mono">1. สร้างไฟล์ LoginPage.ts</span>
+                            <i class="fab fa-js text-yellow-400"></i>
+                        </div>
+                        <div class="p-4 bg-slate-50 h-full">
+                            <p class="text-xs text-slate-500 mb-2">ตัวอย่างแนวคิด TypeScript: รวม locator และการกระทำที่ใช้ซ้ำไว้ในหน้า Login</p>
+<pre class="text-[11px] font-mono bg-white p-3 rounded border border-slate-200 text-slate-800"><code>import { type Locator, type Page } from '@playwright/test';
+
+export class LoginPage {
+  private readonly emailInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly submitButton: Locator;
+
+  constructor(page: Page) {
+    this.emailInput = page.getByLabel('Email');
+    this.passwordInput = page.getByLabel('Password');
+    this.submitButton = page.getByRole('button', { name: 'Sign in' });
+  }
+
+  async signIn(email: string, password: string) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.submitButton.click();
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- File 2 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-indigo-900 px-4 py-2 flex items-center justify-between">
+                            <span class="text-indigo-200 text-xs font-mono">2. สร้างไฟล์ทดสอบ test.spec.ts</span>
+                            <i class="fas fa-vial text-indigo-300"></i>
+                        </div>
+                        <div class="p-4 bg-slate-50 h-full">
+                            <p class="text-xs text-slate-500 mb-2">เทสเรียกใช้การกระทำที่ตั้งชื่อให้สื่อความหมาย โดยยังตรวจผลลัพธ์ที่สำคัญอย่างชัดเจน</p>
+<pre class="text-[11px] font-mono bg-white p-3 rounded border border-slate-200 text-slate-800"><code>import { test, expect } from '@playwright/test';
+import { LoginPage } from './LoginPage';
+
+test('ทดสอบ Login', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.signIn('qa@example.test', 'test-only-password');
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded-lg border border-green-200 mt-6">
+                    <strong class="text-green-800"><i class="fas fa-trophy mr-2"></i> ผลลัพธ์:</strong>
+                    <p class="text-sm text-green-900 mt-1 mb-0">หาก label หรือ flow เปลี่ยน อาจแก้ locator หรือการกระทำที่ใช้ร่วมกันในจุดเดียวได้ แล้วรันทดสอบเพื่อยืนยันว่าพฤติกรรมและความหมายของเทสยังถูกต้อง</p>
+                </div>
+            `,
+            'api_deepdive': `
+                <h1 class="text-slate-900 border-b-2 border-orange-500 pb-2 inline-block">โครงสร้าง API และ HTTP แบบเจาะลึก</h1>
+                <p class="text-slate-600 mt-4 text-lg">API เป็นหนึ่งในจุดเชื่อมต่อที่ผู้ทดสอบใช้ตรวจข้อมูลและพฤติกรรมระหว่างส่วนประกอบของระบบ การเข้าใจ HTTP ช่วยให้ตรวจคำขอ คำตอบ และสัญญาของบริการได้เป็นระบบ API มีหลายรูปแบบ และไม่ได้หมายถึง REST อย่างเดียว</p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">API และ HTTP ทำงานร่วมกันอย่างไร?</h2>
+                <p class="text-sm text-slate-700">ไคลเอนต์ส่ง HTTP request ไปยัง resource หรือ endpoint แล้วรับ response กลับมา คำขอมักประกอบด้วย method, URL, headers และอาจมี query parameters หรือ body ตามสัญญาของ API ไม่จำเป็นต้องมีทุกส่วนในทุกคำขอ</p>
+
+                <h3 class="text-orange-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-paper-plane mr-2"></i> โครงสร้างฝั่ง Request (เราเป็นคนส่ง)</h3>
+                <p class="text-sm text-slate-700 mb-4">ส่วนที่พบบ่อยใน request มีดังนี้ ให้ยึด API contract ว่าส่วนใดจำเป็น:</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block text-md"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs mr-2">1</span> URL / Endpoint</strong>
+                        <p class="text-sm text-slate-600 mt-2">ที่อยู่เป้าหมาย เช่น <code>https://api.example.test/v1/users/123</code> ซึ่งเป็นโดเมนตัวอย่าง ไม่ใช่บริการสำหรับทดสอบจริง</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 block text-md"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs mr-2">2</span> Headers</strong>
+                        <p class="text-sm text-slate-600 mt-2">ข้อมูลกำกับ เช่น <code>Content-Type</code>, <code>Accept</code> หรือข้อมูลยืนยันตัวตน เก็บ token เป็นความลับและอย่าใส่ในภาพหรือ log ที่แชร์ต่อ</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm sm:col-span-2">
+                        <strong class="text-slate-800 block text-md"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs mr-2">3</span> HTTP Methods (กริยา)</strong>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="text-sm"><span class="font-bold text-blue-600">GET:</span> ขอ representation ของ resource โดยทั่วไปใช้เพื่ออ่านข้อมูล</div>
+                            <div class="text-sm"><span class="font-bold text-green-600">POST:</span> ส่งข้อมูลเพื่อให้ resource ประมวลผล เช่น สร้างรายการใหม่ ขึ้นกับสัญญา API</div>
+                            <div class="text-sm"><span class="font-bold text-amber-600">PUT:</span> แทนที่สถานะของ resource ตาม representation ที่ส่ง</div>
+                            <div class="text-sm"><span class="font-bold text-amber-600">PATCH:</span> ขอปรับบางส่วนตามรูปแบบ patch ที่ API รองรับ</div>
+                            <div class="text-sm"><span class="font-bold text-red-600">DELETE:</span> ขอเอา resource ออกจากสถานะที่เข้าถึงได้ ไม่ได้แปลว่าฐานข้อมูลต้องลบแถวทันที</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm sm:col-span-2">
+                        <strong class="text-slate-800 block text-md"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs mr-2">4</span> Body (Payload)</strong>
+                        <p class="text-sm text-slate-600 mt-2">ข้อมูลที่ส่งมากับบาง request เช่น JSON สำหรับ POST, PUT หรือ PATCH รูปแบบและความจำเป็นขึ้นกับ API</p>
+                    </div>
+                </div>
+
+                <h3 class="text-orange-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-reply mr-2"></i> โครงสร้างฝั่ง Response (Server ตอบกลับมา)</h3>
+                <p class="text-sm text-slate-700 mb-4">ตรวจ response ให้ตรงกับ API contract ทั้ง status, headers, body, schema, ผลข้างเคียง และกติกาธุรกิจ รหัสเดียวกันไม่ได้ยืนยันว่าข้อมูลถูกต้องครบถ้วน</p>
+                
+                <div class="space-y-4">
+                    <!-- 2xx -->
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-200 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="bg-green-600 text-white font-mono font-bold text-2xl px-4 py-2 rounded-lg text-center min-w-[80px]">2xx</div>
+                        <div>
+                            <strong class="text-green-800 text-lg">Success (สำเร็จ)</strong>
+                            <p class="text-sm text-green-900 mt-1 mb-0"><strong>200 OK:</strong> คำขอสำเร็จพร้อมผลลัพธ์ตาม method, <strong>201 Created:</strong> สร้าง resource แล้ว, <strong>202 Accepted:</strong> รับคำขอไปประมวลผล, <strong>204 No Content:</strong> สำเร็จโดยไม่มี response body ตามปกติ</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 4xx -->
+                    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="bg-yellow-500 text-white font-mono font-bold text-2xl px-4 py-2 rounded-lg text-center min-w-[80px]">4xx</div>
+                        <div>
+                            <strong class="text-yellow-800 text-lg">4xx (คำขอหรือสิทธิ์มีปัญหา)</strong>
+                            <p class="text-sm text-yellow-900 mt-1 mb-0">
+                                <strong>400 Bad Request:</strong> server ปฏิเสธคำขอเพราะรูปแบบหรือข้อมูลไม่ถูกต้องตามเงื่อนไข<br>
+                                <strong>401 Unauthorized:</strong> ไม่มีข้อมูลยืนยันตัวตนที่ใช้ได้ตามข้อกำหนด<br>
+                                <strong>403 Forbidden:</strong> server เข้าใจคำขอแต่ไม่อนุญาตให้ทำรายการนั้น<br>
+                                <strong>404 Not Found:</strong> ไม่พบ resource หรือเส้นทางตามสัญญาของบริการ<br>
+                                รหัสที่คาดหวังสำหรับกรณีผิดพลาดต้องอ้างอิง API contract
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 5xx -->
+                    <div class="bg-red-50 p-4 rounded-lg border border-red-200 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="bg-red-600 text-white font-mono font-bold text-2xl px-4 py-2 rounded-lg text-center min-w-[80px]">5xx</div>
+                        <div>
+                            <strong class="text-red-800 text-lg">5xx (server หรือ gateway จัดการคำขอไม่สำเร็จ)</strong>
+                            <p class="text-sm text-red-900 mt-1 mb-0"><strong>500 Internal Server Error:</strong> server พบสภาวะผิดพลาดที่ไม่คาดไว้, <strong>502 Bad Gateway:</strong> gateway ได้คำตอบที่ไม่ถูกต้องจาก upstream, <strong>503 Service Unavailable:</strong> ยังให้บริการไม่ได้ชั่วคราว, <strong>504 Gateway Timeout:</strong> gateway ไม่ได้รับคำตอบทันเวลา ไม่ได้แปลว่าระบบหรือเครื่อง server ล่มทุกกรณี</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            'postman_advanced': `
+                <h1 class="text-slate-900 border-b-2 border-orange-500 pb-2 inline-block">ทดสอบ API ด้วย Postman และ Newman</h1>
+                <p class="text-slate-600 mt-4 text-lg">Postman ใช้ส่งคำขอ ตรวจ response และจัดกลุ่มคำขอเป็น Collection เพื่อทดสอบซ้ำได้ ความสามารถและตำแหน่งเมนูอาจต่างกันตามเวอร์ชัน โดยสคริปต์ตรวจ response ปัจจุบันอยู่ที่ <strong>Scripts &gt; Post-response</strong></p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">เริ่มจากเกณฑ์ใน API contract</h2>
+                <p class="text-sm text-slate-700">กำหนดผลที่คาดหวังจากสัญญาของ API ก่อน เช่น status, รูปแบบข้อมูล, กฎธุรกิจ และผลข้างเคียง อย่าตั้งว่าทุกคำขอต้องได้ 200 เพราะบางกรณีอาจคาดหวัง 201, 204 หรือรหัสผิดพลาดที่ระบุไว้</p>
+                <div class="bg-slate-900 text-slate-300 p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-md my-4">
+<pre class="m-0"><code><span class="text-slate-500">// ตัวอย่างนี้สมมติว่า contract ระบุ 200 และ JSON ที่มี id</span>
+pm.test(<span class="text-green-300">"status ตรงตาม contract"</span>, () =&gt; {
+    pm.response.to.have.<span class="text-yellow-200">status</span>(<span class="text-orange-400">200</span>);
+});
+
+pm.test(<span class="text-green-300">"response มี id"</span>, () =&gt; {
+    <span class="text-blue-400">const</span> body = pm.response.<span class="text-yellow-200">json</span>();
+    pm.<span class="text-yellow-200">expect</span>(body.id).to.exist;
+});</code></pre>
+                </div>
+                <p class="text-sm text-slate-700">เพิ่มการตรวจ content type, ฟิลด์และชนิดข้อมูล, กฎธุรกิจ, สิทธิ์ของบทบาทต่างๆ, ข้อมูลขอบเขต และการจัดการข้อผิดพลาดตามความเสี่ยงของ API โค้ดตัวอย่างสมมติว่า response เป็น JSON และมีฟิลด์ <code>id</code> ให้ปรับให้ตรงกับระบบจริง</p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ส่งค่าที่ตอบกลับไปใช้ในคำขอถัดไป</h2>
+                <p class="text-sm text-slate-700">Collection ช่วยจัดลำดับคำขอใน workflow ได้ เช่น สร้างข้อมูลทดสอบ แล้วนำรหัสที่ได้ไปอ่านหรือแก้ข้อมูลนั้น เก็บเฉพาะค่าทดสอบที่จำเป็น และล้างข้อมูลเมื่อจบหากระบบกำหนด</p>
+                <div class="bg-slate-900 text-slate-300 p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-md my-4">
+<pre class="m-0"><code><span class="text-slate-500">// ใน Post-response ของคำขอสร้างข้อมูล ใช้ id ที่ response ส่งกลับ</span>
+<span class="text-blue-400">const</span> body = pm.response.<span class="text-yellow-200">json</span>();
+pm.collectionVariables.<span class="text-yellow-200">set</span>(<span class="text-green-300">"created_record_id"</span>, body.id);</code></pre>
+                </div>
+                <p class="text-sm text-slate-700">คำขอถัดไปอ้างค่าด้วย <code>{{created_record_id}}</code> ตรวจชื่อและล้าง collection variable เมื่อไม่ต้องใช้แล้ว สำหรับ token หรือ secret ให้ใช้ Postman Vault หรือวิธีจัดการความลับที่องค์กรอนุมัติ อย่าฝังค่าไว้ใน collection, ไฟล์ environment ที่แชร์ หรือ source control</p>
+
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-200 mt-6">
+                    <h2 class="text-blue-800 mt-0 font-bold">รันทดสอบซ้ำใน CI</h2>
+                    <p class="text-sm text-blue-900">ใช้ Collection Runner สำหรับการรันใน Postman หรือใช้ Newman เพื่อรัน collection ผ่าน command line และต่อกับ CI ตามความเหมาะสม ตัวอย่างคำสั่ง:</p>
+                    <pre class="bg-white text-slate-800 p-3 rounded border border-blue-100 overflow-x-auto"><code>newman run collection.json -e test-environment.json</code></pre>
+                    <p class="text-sm text-blue-900 mb-0">ใช้ระบบทดสอบที่ได้รับอนุญาตและข้อมูลที่สร้างซ้ำได้ จัดเก็บ credential ด้วย secret store ของ CI ห้าม commit ค่า secret ใน environment file และกำหนดการทำความสะอาดข้อมูลที่สร้างไว้</p>
+                </div>
+            `,
+            'database_testing': `
+                <h1 class="text-slate-900 border-b-2 border-cyan-500 pb-2 inline-block">SQL และการทดสอบข้อมูลสำหรับ QA</h1>
+                <p class="text-slate-600 mt-4 text-lg">SQL ช่วยตรวจข้อมูลที่เก็บในฐานข้อมูลและหาความต่างระหว่างผลที่คาดกับผลจริง ใช้สิทธิ์และสภาพแวดล้อมตามที่ทีมอนุมัติ และอย่าคิดว่าการเห็นข้อมูลในฐานข้อมูลเพียงอย่างเดียวพิสูจน์พฤติกรรมทั้งหมดของผู้ใช้ได้</p>
+
+                <div class="bg-cyan-50 p-5 rounded-xl border border-cyan-200 my-6">
+                    <h2 class="text-cyan-800 mt-0 font-bold">เริ่มจากคำสั่งอ่านข้อมูล</h2>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-cyan-900 mb-0">
+                        <li><code>SELECT</code> เลือกคอลัมน์และข้อมูลที่ต้องการดู</li>
+                        <li><code>WHERE</code> กรองแถว เช่น <code>status = 'paid'</code></li>
+                        <li><code>ORDER BY</code> เรียงผลเพื่ออ่านหรือเปรียบเทียบ</li>
+                        <li><code>JOIN</code> เชื่อมข้อมูลที่สัมพันธ์กัน</li>
+                        <li><code>COUNT</code>, <code>SUM</code>, <code>GROUP BY</code> สรุปจำนวนหรือยอดตามกลุ่ม</li>
+                        <li><code>IS NULL</code> และ <code>IS NOT NULL</code> ตรวจค่าว่างตามความหมายของ SQL</li>
+                    </ul>
+                </div>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ตัวอย่าง: รวมยอดคำสั่งซื้อที่ชำระแล้ว</h2>
+                <p class="text-sm text-slate-700">สมมติว่าตาราง <code>customers</code> มี <code>customer_id</code> และ <code>full_name</code>; ตาราง <code>orders</code> มี <code>customer_id</code>, <code>amount</code> และ <code>status</code> ตรวจชื่อและความหมายของคอลัมน์กับ schema จริงของระบบก่อนใช้</p>
+                <pre class="bg-slate-900 text-slate-100 p-5 rounded-xl overflow-x-auto text-sm"><code>SELECT c.customer_id,
+       c.full_name,
+       SUM(o.amount) AS total_paid
+FROM customers AS c
+JOIN orders AS o ON o.customer_id = c.customer_id
+WHERE o.status = 'paid'
+GROUP BY c.customer_id, c.full_name
+HAVING SUM(o.amount) &gt; 1000
+ORDER BY total_paid DESC
+LIMIT 20;</code></pre>
+                <p class="text-xs text-slate-500 mt-2">ตัวอย่างใช้รูปแบบ <code>LIMIT</code> ที่ฐานข้อมูลบางชนิดรองรับ ไวยากรณ์การจำกัดจำนวนแถวอาจต่างกันระหว่างระบบจัดการฐานข้อมูล</p>
+
+                <h2 class="text-slate-800 mt-8 mb-4">ใช้ SQL ในการตรวจอะไร?</h2>
+                <ul class="list-disc pl-5 space-y-2 text-sm text-slate-700">
+                    <li>บันทึกถูกสร้างหรืออัปเดตตามกติกาและความสัมพันธ์ที่ตกลงกันหรือไม่</li>
+                    <li>ยอดรวม สถานะ จำนวนแถว และข้อมูลซ้ำตรงกับผลจาก API หรือหน้าจอหรือไม่ โดยคำนึงถึง cache และการประมวลผลแบบหน่วงเวลา</li>
+                    <li>ข้อมูลที่ไม่ครบ ค่าว่าง ขอบเขตตัวเลข เวลา และการปัดเศษถูกจัดการอย่างไร</li>
+                    <li>การเรียงหรือกรองข้อมูลให้ผลตรงตามเงื่อนไข เมื่อมีแถวซ้ำหรือหลายความสัมพันธ์หรือไม่</li>
+                </ul>
+
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200 mt-8">
+                    <h2 class="text-red-800 mt-0 font-bold">ข้อควรระวังเมื่อเข้าถึงฐานข้อมูล</h2>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-red-900 mb-0">
+                        <li>ใช้บัญชี read-only และฐานข้อมูลทดสอบเมื่อเป็นไปได้ สอบถามขั้นตอนของทีมก่อนเชื่อมต่อ</li>
+                        <li>เริ่มจากระบุคอลัมน์และตัวกรองให้แคบ จำกัดผลลัพธ์ และระวัง query ที่ใช้ทรัพยากรมาก</li>
+                        <li>อย่ารัน <code>UPDATE</code>, <code>DELETE</code>, DDL หรือคำสั่งแก้ข้อมูลในระบบจริงโดยไม่มีการอนุมัติและแผนควบคุมที่ชัดเจน</li>
+                        <li>ไม่คัดลอกข้อมูลส่วนบุคคลหรือข้อมูลลับไปไว้ใน ticket, portfolio, ภาพหน้าจอ หรือเครื่องมือภายนอกโดยไม่ได้รับอนุญาต</li>
+                    </ul>
+                </div>
+            `,
+            'perf_metrics': `
+                <h1 class="text-slate-900 border-b-2 border-purple-500 pb-2 inline-block">Performance Metrics ที่ต้องรู้</h1>
+                <p class="text-slate-600 mt-4 text-lg">Performance testing วัดพฤติกรรมระบบภายใต้ workload ที่กำหนด แล้วเปรียบเทียบกับเป้าหมาย เช่น latency, throughput และ error rate เพื่อประเมินความเหมาะสมและค้นหาคอขวดโดยดูหลักฐานจากทั้งแอปและตัวสร้างโหลด</p>
+
+                <div class="space-y-6 mt-8">
+                    <!-- Metric 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-md relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-blue-500"></div>
+                        <strong class="text-slate-800 text-xl block mb-2 flex items-center"><i class="fas fa-stopwatch text-blue-500 mr-3 text-2xl"></i> Response Time / Latency (ความเร็ว)</strong>
+                        <p class="text-sm text-slate-600 mb-3">ระยะเวลาที่วัดจากจุดเริ่มจนถึงเหตุการณ์ที่กำหนด เช่น เริ่มส่ง request จนรับ response ครบ หรือจนผู้ใช้เห็นผลลัพธ์ ควรระบุจุดวัดและหน่วยให้ชัดก่อนเปรียบเทียบ</p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-amber-600 text-sm"><i class="fas fa-lightbulb mr-1" aria-hidden="true"></i> ข้อควรดูร่วมกัน: อย่าดูแค่ค่าเฉลี่ย</strong>
+                            <p class="text-xs text-slate-600 mt-1 mb-0">ค่าเฉลี่ยอาจซ่อน request ที่ช้ามากไว้ ค่า P95 หมายถึงประมาณ 95% ของตัวอย่างที่วัดได้ใช้เวลาไม่เกินค่านี้ ส่วนที่เหลือช้ากว่า ควรดูควบคู่กับค่ากลาง ช่วงเวลา จำนวนตัวอย่าง และรูปแบบการใช้งาน ไม่ใช่ค่าที่ดีที่สุดในทุกกรณี</p>
+                        </div>
+                    </div>
+
+                    <!-- Metric 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-md relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-green-500"></div>
+                        <strong class="text-slate-800 text-xl block mb-2 flex items-center"><i class="fas fa-water text-green-500 mr-3 text-2xl"></i> Throughput / RPS (ปริมาณงาน)</strong>
+                        <p class="text-sm text-slate-600 mb-3">ปริมาณงานที่ระบบทำได้ต่อเวลา เช่น requests per second (RPS) หรือธุรกรรมต่อวินาที (TPS) สองค่านี้ไม่จำเป็นต้องเท่ากัน เพราะหนึ่งธุรกรรมอาจเรียกหลาย request</p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-red-600 text-sm"><i class="fas fa-chart-line mr-1"></i> การหาจุดคอขวด:</strong>
+                            <p class="text-xs text-slate-600 mt-1 mb-0">เมื่อเพิ่มภาระงาน ให้สังเกต throughput, latency, errors และทรัพยากรพร้อมกัน การที่ throughput เริ่มคงที่ขณะที่เวลาและข้อผิดพลาดเพิ่มขึ้นอาจเป็นสัญญาณของคอขวด แต่ต้องแยกผลจากตัวสร้างโหลดและเครือข่ายด้วย</p>
+                        </div>
+                    </div>
+
+                    <!-- Metric 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-md relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-red-500"></div>
+                        <strong class="text-slate-800 text-xl block mb-2 flex items-center"><i class="fas fa-times-circle text-red-500 mr-3 text-2xl"></i> Error Rate (อัตราการพัง)</strong>
+                        <p class="text-sm text-slate-600 mb-3">สัดส่วนคำขอที่ไม่ผ่านเกณฑ์ที่ตกลงกัน เช่น ข้อผิดพลาดที่ไม่คาดหวัง หมดเวลา หรือผลธุรกิจไม่ถูกต้อง ต้องกำหนดว่า response แบบใดนับเป็นข้อผิดพลาด เพราะ 4xx บางกรณีอาจเป็นผลที่คาดหวัง</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-md relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-purple-500"></div>
+                        <strong class="text-slate-800 text-xl block mb-2 flex items-center"><i class="fas fa-microchip text-purple-500 mr-3 text-2xl" aria-hidden="true"></i> Resource & Saturation</strong>
+                        <p class="text-sm text-slate-600 mb-0">ติดตาม CPU, memory, connection pool, queue และทรัพยากรของตัวสร้างโหลด เพื่อแยกว่าคอขวดอยู่ที่บริการที่ทดสอบหรือเครื่องมือสร้าง traffic</p>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-700 mt-6">ตั้งเป้าหมายจากความต้องการและ baseline ที่วัดได้ เช่น percentile latency, error rate และ throughput ภายใต้ workload ที่ระบุ อย่าตีความผลหนึ่งรอบว่าแทนประสบการณ์ของผู้ใช้ทุกคนได้</p>
+            `,
+            'k6_intro': `
+                <h1 class="text-slate-900 border-b-2 border-purple-500 pb-2 inline-block">เขียน Load Test ด้วย k6</h1>
+                <p class="text-slate-600 mt-4 text-lg"><strong>k6</strong> เป็นเครื่องมือทดสอบ performance ที่กำหนด workload ด้วยสคริปต์ JavaScript ให้เลือกเครื่องมือจากรูปแบบการทดสอบ ภาษา การรายงาน และระบบที่ทีมใช้อยู่ แทนการสรุปว่าเครื่องมือหนึ่งเร็วหรือเหมาะกว่าทุกกรณี</p>
+
+                <div class="bg-purple-50 p-5 rounded-xl border border-purple-200 my-6 shadow-sm">
+                    <h3 class="text-purple-800 mt-0 font-bold"><i class="fas fa-users mr-2 text-purple-600"></i> คอนเซปต์หลัก: Virtual Users (VUs)</h3>
+                    <p class="text-sm text-purple-900 mb-0">Virtual Users (VUs) ใช้จำลองงานที่ทำซ้ำในรูปแบบหนึ่ง แต่จำนวน VUs ไม่เท่ากับจำนวนผู้ใช้จริงโดยตรง k6 ยังมี executor ที่กำหนดอัตราการเริ่ม iteration ได้ เลือกแบบจำลองตาม traffic ที่ต้องการศึกษา</p>
+                </div>
+
+                <h3 class="text-purple-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-code mr-2"></i> โครงสร้างสคริปต์ k6</h3>
+                <div class="bg-slate-900 text-slate-300 p-5 rounded-xl font-mono text-sm overflow-x-auto shadow-lg my-4 relative group">
+                    <div class="absolute top-0 right-0 bg-slate-700 text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl text-slate-200 font-sans opacity-70 group-hover:opacity-100 transition">load-test.js</div>
+<pre class="m-0 leading-relaxed"><code><span class="text-pink-400">import</span> http <span class="text-pink-400">from</span> <span class="text-green-300">'k6/http'</span>;
+<span class="text-pink-400">import</span> { check, sleep } <span class="text-pink-400">from</span> <span class="text-green-300">'k6'</span>;
+
+<span class="text-slate-500">// 1. Options (ตั้งค่าสถานการณ์การยิงโหลด)</span>
+<span class="text-blue-400">export const</span> options = {
+  vus: <span class="text-orange-400">1</span>,          <span class="text-slate-500">// ตัวอย่างขนาดเล็ก ปรับตามแผนที่ได้รับอนุมัติ</span>
+  duration: <span class="text-green-300">'30s'</span>,  <span class="text-slate-500">// ตัวอย่างช่วงเวลาสั้น</span>
+  thresholds: {
+    <span class="text-slate-500">// ตั้งเป้าว่า 95% ของ Request ต้องตอบกลับไวกว่า 500ms</span>
+    http_req_duration: [<span class="text-green-300">'p(95)&lt;500'</span>], 
+    <span class="text-slate-500">// Error rate ต้องน้อยกว่า 1%</span>
+    http_req_failed: [<span class="text-green-300">'rate&lt;0.01'</span>],
+    <span class="text-slate-500">// check ที่ไม่ผ่านต้องต่ำกว่า 1% จึงทำให้ run ล้มเหลว</span>
+    checks: [<span class="text-green-300">'rate&gt;0.99'</span>]
+  },
+};
+
+<span class="text-slate-500">// 2. Default Function (พฤติกรรมของ 1 VU)</span>
+<span class="text-blue-400">export default function</span> () {
+  <span class="text-slate-500">// แทนที่ URL ด้วย endpoint ทดสอบที่ได้รับอนุญาตเท่านั้น</span>
+  <span class="text-blue-400">const</span> res = http.<span class="text-yellow-200">get</span>(<span class="text-green-300">'https://api.example.test/products'</span>);
+  
+  <span class="text-slate-500">// ทำ Assertion เช็ค Status</span>
+  <span class="text-yellow-200">check</span>(res, {
+    <span class="text-green-300">'status was 200'</span>: (r) => r.status === <span class="text-orange-400">200</span>,
+  });
+  
+  <span class="text-slate-500">// หน่วงเวลา 1 วินาที (จำลองพฤติกรรมมนุษย์ที่ต้องอ่านจอ)</span>
+  <span class="text-yellow-200">sleep</span>(<span class="text-orange-400">1</span>);
+}</code></pre>
+                </div>
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200 mt-6">
+                    <strong class="text-red-800">ก่อนสร้างโหลด:</strong>
+                    <p class="text-sm text-red-900 mt-1 mb-0">รันทดสอบเฉพาะระบบและช่วงเวลาที่ทีมอนุมัติ ระบุปริมาณ ระยะเวลา และผู้ติดต่อ เริ่มจากโหลดต่ำ ตรวจผลกระทบ และหยุดเมื่อถึงเกณฑ์ที่ตกลงไว้ อย่ายิงโหลดใส่ระบบจริงหรือ endpoint สาธารณะโดยพลการ</p>
+                </div>
+                
+                <div class="flex items-center text-slate-700 text-sm mt-4 bg-slate-100 p-3 rounded border border-slate-300">
+                    <i class="fas fa-terminal text-slate-500 text-lg mr-3"></i>
+                    <div>
+                        <strong>วิธีรันสคริปต์ใน Terminal:</strong><br>
+                        <code class="text-indigo-600 bg-white px-1 py-0.5 rounded border border-slate-200 mt-1 inline-block">k6 run load-test.js</code>
+                    </div>
+                </div>
+            `,
+            'git_qa': `
+                <h1 class="text-slate-900 border-b-2 border-red-500 pb-2 inline-block">Git Workflow สำหรับฝั่ง QA</h1>
+                <p class="text-slate-600 mt-4 text-lg">Git บันทึกประวัติการเปลี่ยนแปลงและช่วยให้ทีมพัฒนางานร่วมกัน ไม่จำเป็นต้องเริ่มจากการเขียนโค้ด automation จึงจะเรียนพื้นฐานนี้ได้</p>
+
+                <h3 class="text-red-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-code-branch mr-2"></i> คำศัพท์ Git ฉบับรวบรัด</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start">
+                        <div class="bg-slate-100 w-full sm:w-32 py-2 text-center rounded font-mono font-bold text-slate-800 mr-4 mb-2 sm:mb-0 border border-slate-300">Clone</div>
+                        <div class="flex-1">
+                            <strong class="text-slate-800 block text-md">การก๊อปปี้โปรเจกต์</strong>
+                            <p class="text-sm text-slate-600 mt-1 mb-0">สร้างสำเนา repository จาก remote มาไว้ในเครื่อง การ clone ครั้งต่อไปทำเมื่อสร้าง working copy ใหม่</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start">
+                        <div class="bg-blue-100 w-full sm:w-32 py-2 text-center rounded font-mono font-bold text-blue-800 mr-4 mb-2 sm:mb-0 border border-blue-200">Pull</div>
+                        <div class="flex-1">
+                            <strong class="text-blue-800 block text-md">การอัปเดตโค้ด</strong>
+                            <p class="text-sm text-slate-600 mt-1 mb-0">ดึงข้อมูลจาก remote แล้วรวมเข้ากับ branch ปัจจุบัน การรวมอาจใช้ merge หรือ rebase ตามที่ repository ตั้งไว้ และอาจเกิด conflict</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start">
+                        <div class="bg-green-100 w-full sm:w-32 py-2 text-center rounded font-mono font-bold text-green-800 mr-4 mb-2 sm:mb-0 border border-green-200">Commit</div>
+                        <div class="flex-1">
+                            <strong class="text-green-800 block text-md">การเซฟจุด Checkpoint</strong>
+                            <p class="text-sm text-slate-600 mt-1 mb-0">บันทึก snapshot ของการเปลี่ยนแปลงที่ stage ไว้ในประวัติของ repository ในเครื่อง พร้อมข้อความที่อธิบายเหตุผลหรือขอบเขต เช่น <code>Add login test case</code></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start">
+                        <div class="bg-purple-100 w-full sm:w-32 py-2 text-center rounded font-mono font-bold text-purple-800 mr-4 mb-2 sm:mb-0 border border-purple-200">Push</div>
+                        <div class="flex-1">
+                            <strong class="text-purple-800 block text-md">ดันขึ้นฟ้า (ส่งขึ้น Server)</strong>
+                            <p class="text-sm text-slate-600 mt-1 mb-0">ส่ง commit จากเครื่องไปยัง remote branch ที่กำหนด การ push อาจถูกปฏิเสธเมื่อ remote เปลี่ยนหรือมี policy กำกับ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-500 p-5 my-8 rounded-r-lg shadow-sm">
+                    <h3 class="text-red-800 mt-0 font-bold text-lg"><i class="fas fa-code-branch mr-2" aria-hidden="true"></i> Merge conflict: วิธีรับมือ</h3>
+                    <p class="text-sm text-red-900 mt-2 mb-0">Merge conflict เกิดระหว่างการ merge, rebase หรือการทำงานที่ต้องรวมการเปลี่ยนแปลง เมื่อ Git รวมบางส่วนให้อัตโนมัติไม่ได้ ไม่ได้เกิดกับทุกกรณีที่แก้ไฟล์หรือบรรทัดเดียวกัน ตรวจ diff และบริบท แล้วประสานกับเจ้าของโค้ดก่อนเลือกผลลัพธ์ จากนั้นรันทดสอบที่เกี่ยวข้อง</p>
+                </div>
+            `,
+            'github_actions': `
+                <h1 class="text-slate-900 border-b-2 border-blue-500 pb-2 inline-block">CI/CD ด้วย GitHub Actions</h1>
+                <p class="text-slate-600 mt-4 text-lg"><strong>Continuous Integration (CI)</strong> ช่วยรันการตรวจสอบเมื่อมีการเปลี่ยนโค้ด ส่วน Continuous Delivery/Deployment (CD) เป็นขั้นตอนต่อยอดเพื่อเตรียมหรือส่งมอบระบบตามการตั้งค่า ทั้งหมดต้องออกแบบให้เหมาะกับ repository และสภาพแวดล้อมของทีม</p>
+
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6 shadow-sm">
+                    <h2 class="text-blue-800 mt-0 font-bold text-xl"><i class="fas fa-robot mr-2" aria-hidden="true"></i> ตัวอย่าง workflow สำหรับ CI</h2>
+                    <ol class="text-sm text-blue-900 space-y-4 pl-5 list-decimal mt-4 font-medium">
+                        <li>Dev เขียนโค้ดเสร็จแล้วกด <strong>Push</strong> ขึ้น GitHub</li>
+                        <li>workflow เริ่มตาม event ที่กำหนด เช่น push หรือ pull request</li>
+                        <li>GitHub จัด runner ตามค่า <code>runs-on</code> ซึ่งอาจเป็น hosted runner หรือ self-hosted runner</li>
+                        <li>runner ดึงโค้ด ติดตั้ง dependency ตาม lockfile แล้วรัน checks และ test scripts</li>
+                        <li>ผลงานเป็นสถานะของ workflow การบล็อก merge ต้องตั้ง branch protection หรือ ruleset เพิ่ม ส่วนการแจ้งเตือนต้องตั้ง integration แยก</li>
+                    </ol>
+                </div>
+
+                <h3 class="text-blue-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-file-code mr-2"></i> โครงสร้างไฟล์ YAML แบบเข้าใจง่าย</h3>
+                <p class="text-sm text-slate-700">เราจะสั่งงาน GitHub Actions ผ่านไฟล์นามสกุล <code>.yml</code></p>
+                
+                <div class="bg-slate-900 text-slate-300 p-5 rounded-xl font-mono text-sm overflow-x-auto shadow-lg my-4 relative">
+<pre class="m-0 leading-relaxed"><code><span class="text-green-300">name:</span> <span class="text-white">Playwright E2E Tests</span>
+
+<span class="text-slate-500"># รันตรวจเมื่อเปิด/อัปเดต pull request และเมื่อ push เข้า main</span>
+<span class="text-green-300">on:</span>
+  <span class="text-green-300">pull_request:</span>
+    <span class="text-green-300">branches:</span> [<span class="text-yellow-200">main</span>]
+  <span class="text-green-300">push:</span>
+    <span class="text-green-300">branches:</span> [<span class="text-yellow-200">main</span>]
+
+<span class="text-green-300">jobs:</span>
+  <span class="text-green-300">test:</span>
+    <span class="text-slate-500"># ให้สิทธิ์ token เท่าที่จำเป็นสำหรับงานนี้</span>
+    <span class="text-green-300">permissions:</span>
+      <span class="text-green-300">contents:</span> <span class="text-yellow-200">read</span>
+    <span class="text-green-300">runs-on:</span> <span class="text-white">ubuntu-latest</span>
+    
+    <span class="text-green-300">steps:</span>
+      - <span class="text-green-300">uses:</span> <span class="text-white">actions/checkout@v7</span> <span class="text-slate-500"># ตัวอย่าง major tag; โครงการจริงควร pin SHA ที่ตรวจสอบแล้ว</span>
+      - <span class="text-green-300">uses:</span> <span class="text-white">actions/setup-node@v7</span>
+        <span class="text-green-300">with:</span>
+          <span class="text-green-300">node-version-file:</span> <span class="text-white">.nvmrc</span>
+          <span class="text-green-300">cache:</span> <span class="text-white">npm</span>
+      - <span class="text-green-300">name:</span> <span class="text-white">Install dependencies from lockfile</span>
+        <span class="text-green-300">run:</span> <span class="text-white">npm ci</span>
+      - <span class="text-green-300">name:</span> <span class="text-white">Install Playwright browser</span>
+        <span class="text-green-300">run:</span> <span class="text-white">npx playwright install --with-deps chromium</span>
+      - <span class="text-green-300">name:</span> <span class="text-white">Run tests</span>
+        <span class="text-green-300">run:</span> <span class="text-white">npx playwright test</span></code></pre>
+                </div>
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 mt-6">
+                    <strong class="text-amber-800">ก่อนใช้ใน repository จริง:</strong>
+                    <p class="text-sm text-amber-900 mt-1 mb-0">ตรวจ major version, runner, lockfile และวิธีติดตั้ง browser ตามเอกสารปัจจุบัน กำหนดสิทธิ์ token ให้น้อยที่สุด อย่าเปิดเผย secret ใน log และพิจารณา pin third-party action ด้วย full commit SHA การตั้ง branch protection และ notification เป็นคนละการตั้งค่า</p>
+                </div>
+            `,
+            'prompt_qa': `
+                <h1 class="text-slate-900 border-b-2 border-pink-500 pb-2 inline-block">Prompt Engineering สำหรับ QA</h1>
+                <p class="text-slate-600 mt-4 text-lg">AI ช่วยร่างรายการทดสอบหรือสรุปข้อมูลได้ แต่ไม่รู้กติกาผลิตภัณฑ์ครบถ้วนและอาจสร้างคำตอบที่ฟังดูมั่นใจแต่ไม่ถูกต้อง ผู้ทดสอบต้องตรวจผลลัพธ์กับ requirement หลักฐาน และนโยบายข้อมูลของทีม</p>
+
+                <div class="bg-pink-50 p-6 rounded-xl border border-pink-200 my-8 shadow-sm">
+                    <h2 class="text-pink-800 mt-0 font-bold text-xl"><i class="fas fa-layer-group mr-2" aria-hidden="true"></i> โครงสร้างช่วยเขียน prompt</h2>
+                    <p class="text-sm text-pink-900 mb-4">CREATE เป็น mnemonic ตัวอย่าง ไม่ใช่มาตรฐานสากล เริ่มด้วยการระบุบริบท เป้าหมาย ข้อกำหนด และรูปแบบคำตอบที่ต้องการ</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg border border-pink-100 shadow-sm flex items-start">
+                            <span class="bg-pink-600 text-white font-mono font-bold w-8 h-8 flex items-center justify-center rounded shrink-0 mr-4">C</span>
+                            <div>
+                                <strong class="text-pink-800 block text-md">Context / Role (กำหนดบทบาท)</strong>
+                                <p class="text-sm text-slate-600 mt-1 mb-0">บอกชนิดผลิตภัณฑ์ ผู้ใช้ และขอบเขตงาน โดยไม่ใส่ชื่อบริษัท ระบบ หรือรายละเอียดลับที่ไม่จำเป็น</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg border border-pink-100 shadow-sm flex items-start">
+                            <span class="bg-blue-600 text-white font-mono font-bold w-8 h-8 flex items-center justify-center rounded shrink-0 mr-4">R</span>
+                            <div>
+                                <strong class="text-blue-800 block text-md">Request (บอกเป้าหมายหลัก)</strong>
+                                <p class="text-sm text-slate-600 mt-1 mb-0"><em>"ช่วยเสนอแนวทางทดสอบ flow การโอนเงินตามข้อกำหนดด้านล่าง พร้อมชี้คำถามที่ยังตอบไม่ได้"</em></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg border border-pink-100 shadow-sm flex items-start">
+                            <span class="bg-green-600 text-white font-mono font-bold w-8 h-8 flex items-center justify-center rounded shrink-0 mr-4">E</span>
+                            <div>
+                                <strong class="text-green-800 block text-md">Exact Details (ใส่เงื่อนไข/กฎกติกา)</strong>
+                                <p class="text-sm text-slate-600 mt-1 mb-0">ใส่ acceptance criteria, ตัวอย่างข้อมูลจำลอง, ข้อจำกัด และสิ่งที่อยู่นอกขอบเขต แยกกติกาที่ยืนยันแล้วจากสมมติฐาน</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg border border-pink-100 shadow-sm flex items-start">
+                            <span class="bg-amber-500 text-white font-mono font-bold w-8 h-8 flex items-center justify-center rounded shrink-0 mr-4">F</span>
+                            <div>
+                                <strong class="text-amber-700 block text-md">Format (รูปแบบผลลัพธ์)</strong>
+                                <p class="text-sm text-slate-600 mt-1 mb-0">ขอผลลัพธ์เป็นตารางที่ตรวจทานง่าย เช่น เงื่อนไข, กรณีทดสอบ, expected result, ความเสี่ยง และข้อสมมติที่ต้องยืนยัน</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 text-green-400 p-5 rounded-lg border border-slate-700 font-mono text-sm shadow-md mt-6">
+                    <strong class="text-white block mb-2 font-sans border-b border-slate-600 pb-2"><i class="fas fa-magic mr-2" aria-hidden="true"></i> ตัวอย่าง prompt สำหรับร่าง UI test</strong>
+                    "ช่วยร่าง Playwright test ด้วย TypeScript สำหรับปุ่ม Checkout จาก HTML ด้านล่าง<br>
+                    ตรวจ role, accessible name, การมองเห็น และสถานะ enabled<br>
+                    <code>&lt;button id='submit' class='btn-primary'&gt;Checkout&lt;/button&gt;</code> <br><br>
+                    แสดงสมมติฐานเกี่ยวกับการตั้งค่าโปรเจกต์ และระบุสิ่งที่ snippet นี้ยังยืนยันไม่ได้ ห้ามคิด requirement เพิ่ม"
+                </div>
+                <p class="text-sm text-slate-700 mt-6">ทบทวน locator, assertion, ข้อมูลและความปลอดภัยด้วยคนก่อนนำไปใช้ AI ช่วยสร้างแนวคิดได้ แต่ไม่รับรองความครอบคลุมหรือความถูกต้องของผลทดสอบ</p>
+            `,
+            'ai_testdata': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">ใช้ AI สร้าง Test Data & คิดเคส</h1>
+                <p class="text-slate-600 mt-4 text-lg">AI ช่วยร่างข้อมูลทดสอบได้ แต่ผลลัพธ์ต้องตรวจรูปแบบ ความสัมพันธ์ ความไม่ซ้ำ และกติกาของระบบก่อนใช้ ควรใช้ sandbox fixture หรือชุดข้อมูลจำลองที่ทีมอนุมัติ</p>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2"><i class="fas fa-database mr-2"></i> ตัวอย่าง Prompt สำหรับสร้าง Mock Data</h3>
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 shadow-sm">
+                    <p class="text-sm text-indigo-900 bg-white p-4 rounded-lg border border-indigo-100 font-mono leading-relaxed">
+                        "Generate ข้อมูลลูกค้าคนไทยจำลอง จำนวน 20 คน ออกมาเป็นรูปแบบ JSON Array เพื่อนำไปใช้ทดสอบ API<br><br>
+                        ข้อมูลแต่ละ Object ต้องประกอบด้วย Property ดังนี้:<br>
+                        1. <strong>id:</strong> เป็น UUID<br>
+                        2. <strong>full_name:</strong> ชื่อและนามสกุลภาษาไทย (สุ่มชื่อให้สมจริง)<br>
+                        3. <strong>phone:</strong> ใช้ค่าที่ sandbox ของผู้ให้บริการจัดไว้ หรือใช้ null หาก schema อนุญาต อย่าสุ่มหมายเลขที่อาจเป็นของผู้ใช้จริง<br>
+                        4. <strong>email:</strong> รูปแบบถูกต้องและใช้โดเมนสงวนสำหรับตัวอย่าง เช่น @example.test ตามที่ระบบทดสอบรองรับ<br>
+                        5. <strong>age:</strong> สุ่มตัวเลขระหว่าง 18 ถึง 65<br>
+                        6. <strong>is_active:</strong> ค่า Boolean (สุ่ม True 80% และ False 20%)"
+                    </p>
+                </div>
+
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200 mt-8 shadow-sm relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-2 h-full bg-red-500"></div>
+                    <h3 class="text-red-800 mt-0 font-bold text-xl"><i class="fas fa-shield-alt mr-2"></i> คำเตือนร้ายแรง: Data Privacy & Security</h3>
+                    <p class="text-sm text-red-900 mt-2 mb-4">เลือกเครื่องมือและข้อมูลให้เป็นไปตามการจัดชั้นข้อมูลและนโยบายขององค์กร</p>
+                    <ul class="text-sm text-red-900 space-y-3 pl-5 list-disc font-medium">
+                        <li><strong>ก่อนส่งข้อมูลเข้า AI:</strong> ตรวจว่านโยบายอนุญาตผู้ให้บริการ บัญชี และประเภทข้อมูลนั้นหรือไม่ หากไม่แน่ใจ ให้หยุดและถามผู้ดูแลข้อมูล ห้ามส่งรหัสผ่าน token ข้อมูลลูกค้า หรือ log ที่ระบุตัวบุคคลไปยังบริการที่ยังไม่ได้รับอนุมัติ</li>
+                        <li><strong>ข้อมูลจำลอง:</strong> ใช้ข้อมูลสังเคราะห์หรือข้อมูลที่ผ่านกระบวนการลดความเสี่ยงตามนโยบาย การ mask อาจยังระบุตัวบุคคลได้ และข้อมูลที่ AI สร้างไม่ได้ปลอดภัยจากการซ้ำกับข้อมูลจริงโดยอัตโนมัติ</li>
+                        <li><strong>ตรวจสอบผลลัพธ์:</strong> ใช้ test schema, sandbox account และข้อมูลที่ไม่สามารถส่งข้อความหรือทำธุรกรรมกับบุคคลจริงได้</li>
+                    </ul>
+                </div>
+            `,
+            // ================= CATEGORY 7 (PRACTICAL SKILLS) =================
+            'how_to_write_testcase': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">เขียน Test Case ให้ชัดเจน</h1>
+                <p class="text-slate-600 mt-4 text-lg">Test Case ควรให้ข้อมูลพอสำหรับเป้าหมาย ผู้ใช้ และความเสี่ยงของทีม โครงสร้างด้านล่างเป็นตัวอย่างที่ปรับได้ ไม่ใช่แบบฟอร์มบังคับสำหรับทุกโครงการ</p>
+
+                <h2 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2">ข้อมูลที่อาจใส่ใน Test Case</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-md block mb-1">1. Test Case ID & Title (รหัสและชื่อเรื่อง)</strong>
+                        <p class="text-sm text-slate-600 mb-0">ตั้งชื่อให้เห็นเป้าหมายและเชื่อมกับ requirement หรือความเสี่ยงได้เมื่อจำเป็น <br><span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded mt-1 inline-block border border-emerald-200">TC-LOGIN-01: เข้าสู่ระบบด้วยบัญชีทดสอบที่เปิดใช้งาน</span></p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-md block mb-1">2. Pre-condition (เงื่อนไขก่อนเริ่มเทส)</strong>
+                        <p class="text-sm text-slate-600 mb-0">เงื่อนไขก่อนเริ่ม เช่น บัญชีทดสอบอยู่ในสถานะที่กำหนดหรือบริการจำลองพร้อมใช้งาน ถ้าไม่ต้องเตรียมอะไรเป็นพิเศษให้ระบุว่าไม่มี</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <strong class="text-slate-800 text-md block mb-1">3. Test Steps (ขั้นตอนการทดสอบ)</strong>
+                        <p class="text-sm text-slate-600 mb-0">เขียนขั้นตอนให้พอทำซ้ำได้ ระบุข้อมูลและสภาพแวดล้อมทดสอบ แยกค่าลับออกจากเอกสารที่แชร์</p>
+                        <ol class="list-decimal pl-5 text-sm mt-2 text-slate-700 space-y-1">
+                            <li>เปิดหน้า Login ของแอปทดสอบที่ทีมกำหนด</li>
+                            <li>กรอกข้อมูลจากบัญชีทดสอบที่ได้รับอนุญาต</li>
+                            <li>เลือก “เข้าสู่ระบบ”</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <strong class="text-slate-800 text-md block mb-1">4. Expected Result (ผลลัพธ์ที่คาดหวัง)</strong>
+                            <p class="text-sm text-slate-600 mb-0">สิ่งที่ระบบต้องทำหลังจากทำ Test Steps จบ<br><span class="text-purple-600 bg-purple-50 px-2 py-0.5 rounded mt-1 inline-block border border-purple-200">🎯 เช่น "ระบบพาไปหน้า Dashboard และมุมขวาบนแสดงชื่อลูกค้า"</span></p>
+                        </div>
+                        <div class="flex-1 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-4">
+                            <strong class="text-slate-800 text-md block mb-1">5. Actual Result (ผลลัพธ์จริง)</strong>
+                            <p class="text-sm text-slate-600 mb-0">บันทึกสิ่งที่เกิดจริงระหว่างรัน ส่วน Pass, Fail, Blocked หรือสถานะอื่นเป็นผลสรุปแยกตามวิธีทำงานของทีม</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mt-6">
+                    <strong class="text-slate-800">ข้อมูลเพิ่มเติมเมื่อจำเป็น:</strong>
+                    <p class="text-sm text-slate-700 mt-1 mb-0">ผลลัพธ์ที่คาดหวังสำหรับแต่ละจุดสำคัญ ชุดข้อมูล environment หรือ build หลักฐาน การทำความสะอาดข้อมูลหลังทดสอบ และผู้รับผิดชอบ เลือกเฉพาะรายละเอียดที่ช่วยให้ทดสอบหรือวิเคราะห์ได้</p>
+                </div>
+            `,
+            'qa_team_collab': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">การทำงานร่วมกับ Dev, SA และ PO</h1>
+                <p class="text-slate-600 mt-4 text-lg">การทดสอบเป็นงานร่วมกัน รายงานที่เป็นกลางและมีหลักฐานช่วยให้ทีมทำซ้ำปัญหา ประเมินผลกระทบ และตัดสินใจได้โดยไม่กล่าวโทษกัน</p>
+
+                <div class="grid grid-cols-1 gap-6 mt-6">
+                    <div class="bg-white p-6 rounded-xl border border-blue-200 shadow-sm flex flex-col md:flex-row gap-6">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shrink-0 text-2xl shadow-inner"><i class="fas fa-laptop-code"></i></div>
+                        <div>
+                            <h3 class="mt-0 text-blue-800 font-bold border-b border-blue-100 pb-2">คุยกับ Programmer / Developer</h3>
+                            <p class="text-sm text-slate-700 mt-2"><strong>เมื่อผลทดสอบต่างกัน:</strong> เปรียบเทียบ environment, build, การตั้งค่าและข้อมูลที่ใช้ก่อนสรุปสาเหตุ</p>
+                            <p class="text-sm text-slate-700"><strong>ข้อมูลที่ช่วยทำซ้ำ:</strong> environment และ build, ประเภทอุปกรณ์/เบราว์เซอร์, บัญชีทดสอบหรือสถานะข้อมูลโดยไม่เปิดเผยรหัสผ่าน, ขั้นตอน, ผลที่คาดและผลจริง พร้อม log หรือภาพที่จำเป็นหลังปกปิด token และข้อมูลส่วนบุคคล</p>
+                            <div class="bg-blue-50 text-blue-900 p-2 rounded mt-2 text-sm border border-blue-200">ตัวอย่าง: “คำขอจากหน้า checkout ได้ HTTP 500 ใน build A บน SIT ทำซ้ำได้ 3 ใน 3 ครั้ง ผมแนบ request ที่ลบ token แล้วและเวลาที่เกิดเหตุไว้ใน ticket”</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-purple-200 shadow-sm flex flex-col md:flex-row gap-6">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center shrink-0 text-2xl shadow-inner"><i class="fas fa-project-diagram"></i></div>
+                        <div>
+                            <h3 class="mt-0 text-purple-800 font-bold border-b border-purple-100 pb-2">คุยกับ SA (System Analyst)</h3>
+                            <p class="text-sm text-slate-700 mt-2"><strong>สิ่งที่ทีมทดสอบช่วยได้:</strong> ร่วมทบทวน Requirement และชวนทีมพิจารณากรณีที่ยังไม่ชัด (Shift-Left Testing)</p>
+                            <p class="text-sm text-slate-700"><strong>วิธีรับมือ:</strong> อ่านสเปคที่ SA เขียนแล้ว "ตั้งคำถาม" เช่น "ถ้าลูกค้ากดจ่ายเงินซ้ำ 2 รอบ ระบบดักไว้ไหม?" หรือ "ถ้า API แบงก์ล่มตอนเที่ยงคืน เราจะโชว์ Error อะไรให้ลูกค้าดู?" การถามแบบนี้ช่วยป้องกันบั๊กตั้งแต่ยังไม่เขียนโค้ด</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-emerald-200 shadow-sm flex flex-col md:flex-row gap-6">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shrink-0 text-2xl shadow-inner"><i class="fas fa-user-tie"></i></div>
+                        <div>
+                            <h3 class="mt-0 text-emerald-800 font-bold border-b border-emerald-100 pb-2">คุยกับ PO (Product Owner)</h3>
+                            <p class="text-sm text-slate-700 mt-2"><strong>หน้าที่ของเรา:</strong> อธิบายความเสี่ยงในภาษาที่คน Business เข้าใจ</p>
+                            <p class="text-sm text-slate-700"><strong>วิธีรับมือ:</strong> สรุปฟีเจอร์ที่ได้รับผล ความรุนแรง หลักฐานและแหล่งข้อมูล ความถี่หรือกลุ่มผู้ใช้ที่ทราบ สิ่งที่ยังไม่ทราบ และทางเลือก เช่น แก้ก่อนปล่อย ลดขอบเขต หรือยอมรับความเสี่ยงชั่วคราว การตัดสินใจปล่อยเป็นหน้าที่ของผู้มีอำนาจที่ทีมกำหนด โดยควรบันทึกผู้ตัดสินใจและเหตุผล</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            'jira_guide': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">การใช้ Jira ติดตามงาน</h1>
+                <p class="text-slate-600 mt-4 text-lg">Jira เป็นหนึ่งในเครื่องมือจัดการงานที่ทีมอาจเลือกใช้ การตั้งค่า issue type, workflow, สิทธิ์ และลำดับชั้นแตกต่างกันตามโครงการ ให้ยึดการตั้งค่าจริงและแนวทางของทีม</p>
+
+                <h3 class="text-indigo-800 mt-8 mb-4 border-b border-slate-200 pb-2">ลำดับชั้นของ Ticket ใน Jira</h3>
+                <div class="flex flex-col space-y-2">
+                    <div class="bg-indigo-900 text-white p-3 rounded-lg border border-indigo-950"><span class="bg-indigo-700 px-2 py-1 rounded text-xs font-bold mr-2">EPIC</span> งานหรือผลลัพธ์ขนาดใหญ่ที่อาจรวมหลายรายการ ตามรูปแบบที่ทีมตั้งไว้</div>
+                    <div class="bg-indigo-700 text-white p-3 rounded-lg ml-6 border border-indigo-800"><span class="bg-indigo-500 px-2 py-1 rounded text-xs font-bold mr-2">STORY</span> งานที่อธิบายคุณค่าหรือเป้าหมายสำหรับผู้ใช้/ผู้เกี่ยวข้อง เช่น การจัดการตะกร้าสินค้า</div>
+                    <div class="bg-indigo-100 text-indigo-900 p-3 rounded-lg ml-12 border border-indigo-200 flex items-center"><span class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">TASK</span> งานย่อยเพื่อส่งมอบหรือสนับสนุนเป้าหมาย</div>
+                    <div class="bg-red-50 text-red-900 p-3 rounded-lg ml-12 border border-red-200 flex items-center"><span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">BUG</span> <i class="fas fa-bug text-red-500 mr-2" aria-hidden="true"></i> รายการติดตามข้อบกพร่อง ซึ่งทีมใดก็ช่วยรายงานหรือจัดการได้</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">ตัวอย่างนี้เป็นเพียงภาพประกอบ Jira อาจตั้ง issue type และ hierarchy แบบอื่นได้ และ Bug ไม่จำเป็นต้องเป็นงานของ QA เพียงทีมเดียว</p>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mt-8">
+                    <h3 class="text-slate-800 mt-0 font-bold border-b border-slate-100 pb-2">เขียนรายงานข้อบกพร่องใน Jira</h3>
+                    <p class="text-sm text-slate-700">ฟิลด์ที่มักช่วยให้ทีมตรวจสอบได้เร็ว (ปรับตามแบบฟอร์มและ workflow ของโครงการ):</p>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-slate-600 mt-2">
+                        <li><strong>Summary:</strong> ชื่อที่บอกอาการและบริบท เช่น <code>[Mobile] ปุ่มเข้าสู่ระบบไม่ตอบสนองบน iOS [เวอร์ชันทดสอบ]</code></li>
+                        <li><strong>Description (สำคัญมาก):</strong>
+                            <ul class="list-circle pl-5 mt-1 space-y-1">
+                                <li><strong>Pre-condition:</strong> ระบุสถานะบัญชีและข้อมูลทดสอบโดยไม่แนบรหัสผ่าน</li>
+                                <li><strong>Steps to reproduce:</strong> ใช้ขั้นตอนที่ทำซ้ำได้พร้อมค่าทดสอบที่ปลอดภัย</li>
+                                <li><strong>Expected:</strong> เข้าสู่ระบบได้</li>
+                                <li><strong>Actual:</strong> ปุ่มหมุนค้าง (Loading) และไม่มีอะไรเกิดขึ้น</li>
+                            </ul>
+                        </li>
+                        <li><strong>Attachments:</strong> แนบหลักฐานเท่าที่จำเป็น ปกปิด token, cookie, รหัสผ่าน, ข้อมูลส่วนบุคคล และข้อมูลอื่นที่ไม่ควรเผยแพร่ โดยเฉพาะไฟล์ HAR</li>
+                        <li><strong>Environment:</strong> environment, build, เวอร์ชันเบราว์เซอร์/OS หรือแอป และความถี่ในการทำซ้ำ</li>
+                    </ul>
+                </div>
+            `,
+            'tool_stack': `
+                <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">เลือกเครื่องมือให้เหมาะกับงานทดสอบ</h1>
+                <p class="text-slate-600 mt-4 text-lg">ไม่จำเป็นต้องติดตั้งหรือใช้ทุกเครื่องมือ เลือกจากระบบที่ทีมมีอยู่ ข้อมูลที่ได้รับอนุญาต ทักษะ และงานที่ต้องตรวจ พร้อมดูข้อกำหนด license และความปลอดภัยก่อนนำมาใช้</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-slate-800 mt-0 font-bold flex items-center"><i class="fas fa-database text-blue-500 mr-2 text-xl"></i> Database Tools</h3>
+                        <p class="text-sm text-slate-600">ใช้สำรวจหรือ query ข้อมูลเมื่อได้รับสิทธิ์และอยู่ในสภาพแวดล้อมที่เหมาะสม</p>
+                        <ul class="text-sm text-slate-700 mt-2 space-y-1 pl-4 list-disc">
+                            <li><strong>DBeaver:</strong> client สำหรับเชื่อมต่อฐานข้อมูลหลายชนิด ตรวจ edition และนโยบายขององค์กร</li>
+                            <li><strong>pgAdmin:</strong> เครื่องมือจัดการ PostgreSQL</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-slate-800 mt-0 font-bold flex items-center"><i class="fas fa-network-wired text-green-500 mr-2 text-xl"></i> API & Network</h3>
+                        <p class="text-sm text-slate-600">เอาไว้ยิง API และดูการเชื่อมต่อหลังบ้าน</p>
+                        <ul class="text-sm text-slate-700 mt-2 space-y-1 pl-4 list-disc">
+                            <li><strong>Postman:</strong> สร้างและจัดการ request, collection และ API test scripts</li>
+                            <li><strong>OpenAPI / Swagger UI:</strong> OpenAPI คือรูปแบบคำอธิบาย API; Swagger UI เป็นหนึ่งในเครื่องมือแสดงเอกสารแบบโต้ตอบ</li>
+                            <li><strong>Charles Proxy:</strong> proxy สำหรับตรวจ traffic ที่อุปกรณ์และสภาพแวดล้อมได้รับอนุญาต</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-slate-800 mt-0 font-bold flex items-center"><i class="fab fa-figma text-pink-500 mr-2 text-xl"></i> Design & UI</h3>
+                        <p class="text-sm text-slate-600">เทียบการทำงานและหน้าตากับ requirement, design และ viewport ที่ตกลงกัน</p>
+                        <ul class="text-sm text-slate-700 mt-2 space-y-1 pl-4 list-disc">
+                            <li><strong>Figma:</strong> อ้างอิงหน้าจอและ design specifications ตามสิทธิ์การเข้าถึง; ความต่างควรตัดสินตามเกณฑ์ที่ตกลง</li>
+                            <li><strong>Browser DevTools:</strong> ตรวจ DOM, network, storage และ console สำหรับวิเคราะห์พฤติกรรมเว็บ</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-slate-800 mt-0 font-bold flex items-center"><i class="fas fa-code-branch text-orange-500 mr-2 text-xl"></i> Version Control & CI/CD</h3>
+                        <p class="text-sm text-slate-600">เก็บการเปลี่ยนแปลงและรันทดสอบตาม event, pull request, schedule หรือวิธีที่ทีมกำหนด</p>
+                        <ul class="text-sm text-slate-700 mt-2 space-y-1 pl-4 list-disc">
+                            <li><strong>Git:</strong> ระบบจัดการประวัติการเปลี่ยนแปลง; GitHub, GitLab และ Bitbucket เป็นบริการที่อาจโฮสต์ repository และ workflow</li>
+                            <li><strong>Jenkins / GitHub Actions:</strong> ตัวอย่างระบบ CI ที่ใช้ workflow รันทดสอบตามการตั้งค่า</li>
+                        </ul>
+                    </div>
+                </div>
+            `
+        };
+
+        const articleSources = {
+            modern_tester: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            intro: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            qa_vocab: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            stlc: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            risk_testing: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            bug_lifecycle: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            test_design: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ],
+            accessibility: [
+                { label: 'Web Content Accessibility Guidelines (WCAG) 2.2', url: 'https://www.w3.org/TR/WCAG22/' },
+                { label: 'W3C WAI: Easy Checks for a first review', url: 'https://www.w3.org/WAI/test-evaluate/easy-checks/' }
+            ],
+            security_testing: [
+                { label: 'OWASP Web Security Testing Guide', url: 'https://owasp.org/projects/web-security-testing-guide?tab=main' },
+                { label: 'OWASP Application Security Verification Standard (ASVS)', url: 'https://owasp.org/projects/asvs?tab=main' }
+            ],
+            playwright: [
+                { label: 'Playwright: Best Practices', url: 'https://playwright.dev/docs/best-practices' },
+                { label: 'Playwright: Locators', url: 'https://playwright.dev/docs/locators' }
+            ],
+            cypress: [
+                { label: 'Cypress: Retry-ability', url: 'https://docs.cypress.io/app/core-concepts/retry-ability' },
+                { label: 'Cypress: Cross-origin testing', url: 'https://docs.cypress.io/app/guides/cross-origin-testing' },
+                { label: 'Cypress: Test isolation', url: 'https://docs.cypress.io/app/core-concepts/test-isolation' }
+            ],
+            api_deepdive: [
+                { label: 'IETF RFC 9110: HTTP Semantics', url: 'https://www.rfc-editor.org/rfc/rfc9110.html' }
+            ],
+            postman_advanced: [
+                { label: 'Postman Docs: Write scripts to test API response data', url: 'https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/' },
+                { label: 'Postman Docs: Use vault secrets', url: 'https://learning.postman.com/docs/use/postman-vault/use-vault-secrets' },
+                { label: 'Postman Docs: Install and run Newman', url: 'https://learning.postman.com/docs/reference/newman-cli/installing-running-newman/' }
+            ],
+            database_testing: [
+                { label: 'PostgreSQL Documentation: Queries', url: 'https://www.postgresql.org/docs/current/queries.html' }
+            ],
+            k6_intro: [
+                { label: 'Grafana k6: Scenarios and executors', url: 'https://grafana.com/docs/k6/latest/using-k6/scenarios/' },
+                { label: 'Grafana k6: Test for performance', url: 'https://grafana.com/docs/k6/latest/examples/get-started-with-k6/test-for-performance/' }
+            ],
+            github_actions: [
+                { label: 'GitHub Actions: Secure use reference', url: 'https://docs.github.com/en/actions/reference/security/secure-use' },
+                { label: 'GitHub Actions: Secrets', url: 'https://docs.github.com/en/actions/concepts/security/secrets' }
+            ],
+            how_to_get_job: [
+                { label: 'OWASP Web Security Testing Guide', url: 'https://owasp.org/www-project-web-security-testing-guide/' }
+            ],
+            how_to_write_testcase: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
+            ]
+        };
+
+        const articleSearchIndex = {};
+        function buildArticleSearchIndex() {
+            Object.keys(articleData).forEach(id => {
+                const template = document.createElement('template');
+                template.innerHTML = articleData[id];
+                articleSearchIndex[id] = (template.content.textContent || '').toLocaleLowerCase('th-TH');
+            });
+        }
+
+        function renderSidebar(filterText = '') {
+            const nav = document.getElementById('sidebarNav');
+            const query = filterText.trim().toLocaleLowerCase('th-TH');
+            nav.replaceChildren();
+            let resultCount = 0;
+
+            menuData.forEach((section, index) => {
+                const matchingItems = section.items.filter(item => {
+                    return !query || item.title.toLocaleLowerCase('th-TH').includes(query) ||
+                        (articleSearchIndex[item.id] || '').includes(query);
+                });
+                if (matchingItems.length === 0) return;
+
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'px-5 py-2' + (index > 0 ? ' mt-4' : '');
+                const heading = document.createElement('h2');
+                heading.className = 'text-xs font-bold text-slate-500 uppercase tracking-wider font-heading mb-3';
+                const icon = document.createElement('i');
+                icon.className = section.icon + ' mr-2';
+                icon.setAttribute('aria-hidden', 'true');
+                heading.append(icon, document.createTextNode(section.category));
+                sectionDiv.appendChild(heading);
+
+                const list = document.createElement('ul');
+                list.className = 'space-y-1';
+                matchingItems.forEach(item => {
+                    resultCount += 1;
+                    const row = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = '#' + item.id;
+                    link.dataset.articleId = item.id;
+                    link.className = 'nav-item flex items-center px-4 py-2 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border-r-[3px] border-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600';
+                    link.id = 'nav-' + item.id;
+                    link.textContent = item.title;
+                    if (item.id === window.currentArticleId) {
+                        link.classList.add('active');
+                        link.setAttribute('aria-current', 'page');
+                    }
+                    row.appendChild(link);
+                    list.appendChild(row);
+                });
+                sectionDiv.appendChild(list);
+                nav.appendChild(sectionDiv);
+            });
+
+            if (query && resultCount === 0) {
+                const emptyState = document.createElement('p');
+                emptyState.className = 'px-5 py-6 text-sm text-slate-500';
+                emptyState.setAttribute('role', 'status');
+                emptyState.textContent = 'ไม่พบบทความที่ตรงกับคำค้น';
+                nav.appendChild(emptyState);
+            }
+        }
+
+        function appendArticleSources(contentArea, id) {
+            const sources = articleSources[id] || [];
+            if (sources.length === 0) return;
+
+            const section = document.createElement('section');
+            section.className = 'not-prose mt-12 border-t border-slate-200 pt-6';
+            const heading = document.createElement('h2');
+            heading.className = 'text-lg font-bold text-slate-800';
+            heading.textContent = 'แหล่งอ้างอิงและอ่านต่อ';
+            const list = document.createElement('ul');
+            list.className = 'mt-3 list-disc space-y-2 pl-5 text-sm';
+            sources.forEach(source => {
+                const item = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = source.url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = source.label;
+                item.appendChild(link);
+                list.appendChild(item);
+            });
+            section.append(heading, list);
+            contentArea.appendChild(section);
+        }
+
+        function getArticleMeta(id) {
+            for (const section of menuData) {
+                const item = section.items.find(candidate => candidate.id === id);
+                if (item) return { item, category: section.category.replace(/^\d+\.\s*/, '') };
+            }
+            return null;
+        }
+
+        function loadArticle(id, updateHistory = false) {
+            const meta = getArticleMeta(id);
+            if (!meta || !articleData[id]) return false;
+
+            if (updateHistory && window.location.hash !== '#' + id) {
+                window.history.pushState({ articleId: id }, '', '#' + id);
+            }
+            window.currentArticleId = id;
+            document.getElementById('bc-category').textContent = meta.category;
+            document.getElementById('bc-title').textContent = meta.item.title;
+            document.title = meta.item.title + ' | Tester Wiki';
+
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+                if (link.dataset.articleId === id) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+
+            const contentArea = document.getElementById('articleContent');
+            contentArea.innerHTML = articleData[id];
+            appendArticleSources(contentArea, id);
+            document.getElementById('mainContentArea').scrollTop = 0;
+            const heading = contentArea.querySelector('h1');
+            if (heading) {
+                heading.tabIndex = -1;
+                heading.focus({ preventScroll: true });
+            }
+
+            if (window.innerWidth < 768 && mobileMenuOpen) toggleMobileMenu();
+            return true;
+        }
+
+        function filterMenu() {
+            renderSidebar(document.getElementById('searchInput').value);
+        }
+
+        let mobileMenuOpen = false;
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const button = document.getElementById('mobileMenuButton');
+            mobileMenuOpen = !mobileMenuOpen;
+            sidebar.classList.toggle('-translate-x-full', !mobileMenuOpen);
+            sidebar.classList.toggle('translate-x-0', mobileMenuOpen);
+            overlay.classList.toggle('hidden', !mobileMenuOpen);
+            button.setAttribute('aria-expanded', String(mobileMenuOpen));
+            button.setAttribute('aria-label', mobileMenuOpen ? 'ปิดเมนูหลัก' : 'เปิดเมนูหลัก');
+        }
+
+        document.getElementById('sidebarNav').addEventListener('click', event => {
+            const link = event.target.closest('a[data-article-id]');
+            if (!link) return;
+            event.preventDefault();
+            loadArticle(link.dataset.articleId, true);
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && mobileMenuOpen) {
+                toggleMobileMenu();
+                document.getElementById('mobileMenuButton').focus();
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            const id = window.location.hash.slice(1);
+            loadArticle(id || 'intro');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            buildArticleSearchIndex();
+            renderSidebar();
+            const requestedId = window.location.hash.slice(1);
+            if (!loadArticle(requestedId || 'intro')) loadArticle('intro');
+        });    </script>
+</body>
+</html>
