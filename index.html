@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="คู่มือ Software Testing ภาษาไทย ตั้งแต่พื้นฐาน การออกแบบการทดสอบ API, SQL, Automation, Performance และการทำงานร่วมกับทีม">
+    <meta name="description" content="คู่มือ Software Testing ภาษาไทย พร้อมบทเรียน แบบฝึกหัดสถานการณ์จำลอง และการฝึกทักษะ QA ตั้งแต่พื้นฐานจนถึง API, Automation และ Accessibility">
     <meta name="theme-color" content="#0f172a">
     <title>Tester Wiki — คู่มือ Software Testing ภาษาไทย</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
@@ -19,6 +19,10 @@
         main::-webkit-scrollbar-track { background: #f8fafc; }
         main::-webkit-scrollbar-thumb { background-color: #94a3b8; border-radius: 4px; }
         .nav-item.active { background-color: #eff6ff; color: #4f46e5; font-weight: 600; border-right: 3px solid #4f46e5; }
+        .practice-feedback { border-radius: 0.75rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.925rem; }
+        .practice-feedback[data-state="correct"] { color: #065f46; background: #ecfdf5; border: 1px solid #a7f3d0; }
+        .practice-feedback[data-state="try-again"] { color: #854d0e; background: #fefce8; border: 1px solid #fde68a; }
+        .practice-feedback[data-state="neutral"] { color: #334155; background: #f8fafc; border: 1px solid #cbd5e1; }
     </style>
 </head>
 <body class="flex h-screen bg-slate-50 text-slate-800 overflow-hidden">
@@ -145,10 +149,340 @@
                     { id: 'jira_guide', title: 'การใช้ Jira เปิดบั๊กและตามงาน' },
                     { id: 'tool_stack', title: 'เครื่องมือที่พบบ่อยและวิธีเลือก' }
                 ]
+            },
+            {
+                category: "8. ห้องฝึกทักษะ Tester", icon: "fas fa-dumbbell",
+                items: [
+                    { id: 'tester_practice', title: 'แบบฝึกหัดสถานการณ์จำลอง' }
+                ]
+            }
+        ];
+
+        const practiceExercises = [
+            {
+                id: 'practice_requirements', skill: 'วิเคราะห์ความต้องการ', level: 'เริ่มต้น',
+                title: 'คูปองสำหรับ “ลูกค้าใหม่”',
+                scenario: 'Requirement ระบุว่า “ลูกค้าใหม่รับส่วนลด 10%” แต่ยังไม่บอกว่าคำว่า “ใหม่” หมายถึงอะไร และลูกค้าที่เคยยกเลิกบัญชีนับหรือไม่',
+                prompt: 'ก่อนเริ่มเขียน Test Case คุณควรทำอะไรเป็นอันดับแรก?',
+                options: [
+                    { text: 'ถามผู้เกี่ยวข้องให้กำหนดความหมายของลูกค้าใหม่ เงื่อนไขการใช้ และผลลัพธ์ที่คาดหวัง', correct: true, feedback: 'เริ่มจากทำให้เงื่อนไขตรวจสอบได้ แล้วบันทึกตัวอย่างและข้อยกเว้นที่ตกลงร่วมกัน' },
+                    { text: 'เดาความหมายเองแล้วเขียนกรณีทดสอบตามที่คิดว่าน่าจะใช่', feedback: 'การเดาอาจทำให้ Tester กับทีมใช้กติกาคนละแบบ ลองหาคำถามที่ช่วยปิดช่องว่างของ requirement ก่อน' },
+                    { text: 'รอให้ระบบเสร็จแล้วค่อยดูว่าคูปองทำงานอย่างไร', feedback: 'การรอทำให้ความคลุมเครือถูกพบช้า ลองช่วยทีมค้นหาความเสี่ยงได้ตั้งแต่ก่อนพัฒนา' },
+                    { text: 'เริ่มทดสอบเฉพาะกรณีที่ใช้คูปองสำเร็จ', feedback: 'กรณีสำเร็จอย่างเดียวไม่ครอบคลุมสิทธิ์และข้อยกเว้น ลองถามว่าระบบควรตัดสินใจอย่างไรในแต่ละกรณี' }
+                ]
+            },
+            {
+                id: 'practice_boundaries', skill: 'ออกแบบ Test Case', level: 'เริ่มต้น',
+                title: 'อายุที่สมัครได้',
+                scenario: 'ระบบยอมรับผู้สมัครที่มีอายุตั้งแต่ 18 ถึง 60 ปี โดยรวมอายุ 18 และ 60 ด้วย',
+                prompt: 'ชุดข้อมูลใดตรวจขอบเขตของช่วงอายุได้ตรงจุดที่สุด?',
+                options: [
+                    { text: '17, 18, 19, 59, 60 และ 61 ปี', correct: true, feedback: 'ถูกต้อง มีค่าก่อนขอบเขต ที่ขอบเขต และถัดจากขอบเขตทั้งด้านต่ำและสูง' },
+                    { text: '20, 30 และ 40 ปี', feedback: 'ค่ากลางช่วยตรวจกรณีปกติ แต่ยังไม่ช่วยเปิดเผยข้อผิดพลาดตรงเส้นแบ่ง 18 และ 60' },
+                    { text: '18 และ 60 ปีเท่านั้น', feedback: 'ตรวจค่าที่อนุญาตแล้ว แต่ยังไม่รู้ว่าระบบปฏิเสธค่าที่ต่ำกว่าและสูงกว่าได้ถูกต้องหรือไม่' },
+                    { text: '0 และ 100 ปี', feedback: 'ค่าที่ไกลจากช่วงอาจเจอข้อผิดพลาดบางแบบ แต่พลาดความผิดพลาดที่เกิดตรงขอบเขตได้ง่าย' }
+                ]
+            },
+            {
+                id: 'practice_risk', skill: 'จัดลำดับความเสี่ยง', level: 'กลาง',
+                title: 'ชำระเงินไม่ได้ก่อนปล่อยระบบ',
+                scenario: 'ก่อนกำหนดปล่อยระบบหนึ่งวัน พบว่าผู้ใช้ทุกคนชำระเงินด้วยบัตรไม่ได้ ส่วนการแก้สีไอคอนในหน้าช่วยเหลือยังไม่เสร็จ',
+                prompt: 'Tester ควรช่วยทีมตัดสินใจอย่างไร?',
+                options: [
+                    { text: 'รวบรวมหลักฐานและขอบเขตผลกระทบ แจ้งผู้รับผิดชอบทันที แล้วจัดลำดับตามเกณฑ์ความรุนแรงและความเร่งด่วนของทีม', correct: true, feedback: 'ถูกต้อง ปัญหากระทบเส้นทางรายได้และผู้ใช้จำนวนมาก ควรสื่อสารด้วยหลักฐานและให้ทีม triage ตามเกณฑ์ร่วมกัน' },
+                    { text: 'ทดสอบสีไอคอนให้เสร็จก่อน เพราะเป็นงานที่ทำได้เร็ว', feedback: 'ความเร็วในการตรวจไม่ใช่ตัวแทนความเสี่ยง ลองพิจารณาผลกระทบต่อผู้ใช้และธุรกิจหากปล่อยปัญหานี้ไป' },
+                    { text: 'กำหนดระดับบั๊กและสั่งเลื่อนปล่อยระบบด้วยตัวเองทันที', feedback: 'Tester ควรให้หลักฐานและคำแนะนำตามอำนาจหน้าที่ เกณฑ์จัดระดับและการตัดสินใจปล่อยระบบควรเป็นข้อตกลงของทีม' },
+                    { text: 'รอให้มีผู้ใช้แจ้งปัญหาจริงก่อนค่อยแจ้งทีม', feedback: 'การรอเพิ่มความเสี่ยงให้ผู้ใช้ ลองยกระดับข้อมูลที่ยืนยันได้ตั้งแต่พบปัญหา' }
+                ]
+            },
+            {
+                id: 'practice_api', skill: 'API Testing', level: 'กลาง',
+                title: 'API ข้อมูลส่วนตัว',
+                scenario: 'สเปกระบุว่า `GET /profile` ต้องยืนยันตัวตน และห้ามส่งข้อมูลส่วนตัวกลับเมื่อไม่มีสิทธิ์',
+                prompt: 'กรณีทดสอบใดตรวจข้อกำหนดนี้ได้ดีที่สุด?',
+                options: [
+                    { text: 'ส่งคำขอโดยไม่มี token แล้วตรวจสถานะตามสเปก พร้อมยืนยันว่า response ไม่มีข้อมูลส่วนตัว', correct: true, feedback: 'ถูกต้อง ตรวจทั้งผลการยืนยันตัวตนและเนื้อหาที่ส่งกลับ อย่าตรวจแค่ status code อย่างเดียว' },
+                    { text: 'ส่งคำขอด้วยบัญชีผู้ดูแลระบบที่ถูกต้อง แล้วเช็กว่าได้ 200', feedback: 'นี่ตรวจกรณีผู้มีสิทธิ์เท่านั้น แต่ไม่ตอบว่าระบบป้องกันคำขอที่ไม่มีตัวตนหรือไม่' },
+                    { text: 'ตรวจเฉพาะว่า response ใช้ JSON', feedback: 'รูปแบบ JSON ไม่ได้ยืนยันว่ามีการป้องกันข้อมูล ลองตรวจสิทธิ์ สถานะ และข้อมูลใน body ด้วย' },
+                    { text: 'ยิง request ซ้ำจำนวนมากเพื่อให้แน่ใจว่า endpoint ตอบเร็ว', feedback: 'ความเร็วเป็นคนละคุณสมบัติกับการควบคุมสิทธิ์ และการยิงซ้ำโดยไม่จำเป็นอาจสร้างภาระให้ระบบ' }
+                ]
+            },
+            {
+                id: 'practice_sql', skill: 'SQL และการตรวจข้อมูล', level: 'กลาง',
+                title: 'ยอดคำสั่งซื้อไม่ตรง',
+                scenario: 'หน้ารายงานแสดงยอดชำระของคำสั่งซื้อหนึ่งรายการไม่ตรงกับรายการชำระเงินที่เกี่ยวข้อง ต้องหาสาเหตุในฐานข้อมูลทดสอบ',
+                prompt: 'แนวทางตรวจข้อมูลแบบใดให้หลักฐานตรงประเด็นและลดการเปิดเผยข้อมูลที่ไม่จำเป็น?',
+                options: [
+                    { text: 'ค้นด้วยรหัสคำสั่งซื้อ เชื่อมตารางคำสั่งซื้อกับรายการชำระ แล้วเปรียบเทียบยอดและสถานะตามกติกา', correct: true, feedback: 'ถูกต้อง จำกัดขอบเขตข้อมูลและเชื่อมความสัมพันธ์ที่เกี่ยวข้อง พร้อมตรวจยอดและสถานะตามธุรกิจ' },
+                    { text: 'ดึงข้อมูลทุกคอลัมน์ของลูกค้าทุกคนมา export แล้วไล่หาด้วยตา', feedback: 'การดึงข้อมูลเกินจำเป็นเพิ่มความเสี่ยงด้านข้อมูลส่วนบุคคลและทำให้วิเคราะห์ยาก ลองจำกัดด้วยรหัสที่เกี่ยวข้อง' },
+                    { text: 'แก้ยอดในฐานข้อมูลให้ตรงกับหน้าจอแล้วลองใหม่', feedback: 'การแก้ข้อมูลทำลายหลักฐานต้นเหตุ ลองอ่านและเปรียบเทียบข้อมูลก่อน โดยใช้สภาพแวดล้อมและสิทธิ์ที่ได้รับอนุญาต' },
+                    { text: 'ตรวจเฉพาะสีของสถานะบนหน้ารายงาน', feedback: 'สีหน้าจอไม่บอกว่ายอดหรือความสัมพันธ์ในข้อมูลถูกต้อง ลองตรวจค่าที่ระบบใช้คำนวณจริง' }
+                ]
+            },
+            {
+                id: 'practice_bug_report', skill: 'รายงาน Defect', level: 'เริ่มต้น',
+                title: 'บั๊กเกิดเฉพาะบนมือถือ',
+                scenario: 'ปุ่มชำระเงินกดไม่ได้บน Safari ที่ความกว้าง 375 px แต่ทำงานบน Chrome desktop',
+                prompt: 'รายงานบั๊กควรมีข้อมูลใดเพื่อช่วยให้ทีมทำซ้ำและประเมินผลกระทบ?',
+                options: [
+                    { text: 'ขั้นตอนทำซ้ำ ผลที่คาด/ผลที่เกิดจริง อุปกรณ์ เบราว์เซอร์ ขนาดจอ build และหลักฐานที่ไม่เปิดเผยข้อมูลลับ', correct: true, feedback: 'ถูกต้อง ข้อมูลแวดล้อมและขั้นตอนที่ชัดช่วยทำซ้ำ ส่วนหลักฐานและผลกระทบช่วยจัดลำดับการแก้ไข' },
+                    { text: 'เขียนว่า “ปุ่มเสีย” และระบุชื่อคนที่น่าจะทำให้เกิดปัญหา', feedback: 'คำบรรยายกว้างและการกล่าวโทษไม่ช่วยทำซ้ำ ลองบอกสิ่งที่ทำ ผลที่เห็น และสภาพแวดล้อมแทน' },
+                    { text: 'แนบภาพหน้าจออย่างเดียวโดยไม่บอกว่าเกิดอย่างไร', feedback: 'ภาพช่วยยืนยันบางอย่าง แต่ถ้าไม่มีขั้นตอนและผลที่คาด ทีมอาจทำซ้ำไม่ได้' },
+                    { text: 'ส่งคลิปที่มีชื่อผู้ใช้ token และข้อมูลบัตรครบเพื่อให้เห็นปัญหา', feedback: 'หลักฐานต้องไม่เปิดเผยความลับหรือข้อมูลส่วนบุคคล ให้ปกปิดข้อมูลและใช้ข้อมูลทดสอบที่ได้รับอนุญาต' }
+                ]
+            },
+            {
+                id: 'practice_automation', skill: 'เลือกงานสำหรับ Automation', level: 'กลาง',
+                title: 'ทดสอบซ้ำทุกครั้งก่อนปล่อย',
+                scenario: 'ทีมตรวจเส้นทางเข้าสู่ระบบและชำระเงินที่เสถียรทุกครั้งก่อนปล่อย ส่วนข้อความแคมเปญเปลี่ยนบ่อยตามการตลาด',
+                prompt: 'งานใดเหมาะเป็นผู้สมัครสำหรับ automation ก่อน?',
+                options: [
+                    { text: 'เส้นทางเข้าสู่ระบบและชำระเงินที่สำคัญ ทำซ้ำบ่อย และมีผลคาดหวังที่ชัดเจน', correct: true, feedback: 'ถูกต้อง ความสำคัญ ความถี่ และความเสถียรทำให้เห็นคุณค่าของ automation ชัดขึ้น แต่ยังควรทบทวนต้นทุนดูแล' },
+                    { text: 'ข้อความแคมเปญทุกประโยค แม้ข้อความเปลี่ยนทุกวัน', feedback: 'กรณีที่เปลี่ยนถี่อาจมีต้นทุนดูแลสูง ลองเริ่มจากพฤติกรรมสำคัญที่คงที่และตรวจซ้ำบ่อย' },
+                    { text: 'ทุกกรณีทดสอบในระบบโดยอัตโนมัติทันที', feedback: 'การทำทุกอย่างอัตโนมัติอาจสิ้นเปลืองและเปราะบาง เลือกตามความเสี่ยง ความถี่ ความเสถียร และต้นทุน' },
+                    { text: 'กรณีที่ยังไม่เข้าใจกติกาธุรกิจ เพื่อให้สคริปต์ช่วยตัดสินใจแทน', feedback: 'automation ต้องมี expected result ที่ชัด ไม่สามารถแทนการทำความเข้าใจ requirement ที่ยังคลุมเครือได้' }
+                ]
+            },
+            {
+                id: 'practice_accessibility', skill: 'Accessibility', level: 'กลาง',
+                title: 'กล่องยืนยันที่ใช้คีย์บอร์ด',
+                scenario: 'เว็บเปิดกล่องยืนยันลบรายการ ผู้ใช้บางคนไม่ใช้เมาส์',
+                prompt: 'ควรตรวจการจัดการ focus อย่างไร?',
+                options: [
+                    { text: 'เมื่อเปิดให้ focus เข้าไปในกล่อง ใช้ Tab อยู่ในกล่องได้ และเมื่อปิด focus กลับไปยังปุ่มที่เปิดกล่อง', correct: true, feedback: 'ถูกต้อง การเริ่มต้น เคลื่อนที่ และคืน focus ช่วยให้ผู้ใช้คีย์บอร์ดทำงานต่อได้โดยไม่หลงตำแหน่ง' },
+                    { text: 'ตรวจเฉพาะว่ากล่องมองเห็นได้บนจอ', feedback: 'การมองเห็นอย่างเดียวไม่ครอบคลุมผู้ใช้คีย์บอร์ด ลองเดินผ่านขั้นตอนทั้งหมดโดยไม่ใช้เมาส์' },
+                    { text: 'ปิด outline ของ focus เพื่อให้หน้าจอดูสะอาด', feedback: 'การซ่อน focus indicator ทำให้ระบุตำแหน่งปัจจุบันยาก ควรมีตัวบอก focus ที่เห็นชัด' },
+                    { text: 'ใช้เมาส์คลิกปุ่มยืนยันเพียงครั้งเดียว', feedback: 'ยังไม่ได้ตรวจว่าผู้ใช้คีย์บอร์ดเข้าถึง ควบคุม และออกจากกล่องได้หรือไม่' }
+                ]
+            },
+            {
+                id: 'practice_security', skill: 'Security แบบได้รับอนุญาต', level: 'กลาง',
+                title: 'ตรวจสิทธิ์การดูใบแจ้งหนี้',
+                scenario: 'ทีมให้คุณตรวจระบบ staging ด้วยบัญชีทดสอบ A และ B เพื่อยืนยันว่าผู้ใช้ไม่เห็นใบแจ้งหนี้ของกันและกัน',
+                prompt: 'วิธีทดสอบใดปลอดภัยและตรงกับขอบเขตที่ได้รับอนุญาต?',
+                options: [
+                    { text: 'ใช้บัญชี A ขอข้อมูลของ A แล้วทดลองใช้รหัสใบแจ้งหนี้ของ B ใน staging ตามแผน พร้อมบันทึกผลโดยไม่ใช้ข้อมูลจริง', correct: true, feedback: 'ถูกต้อง ทดสอบการอนุญาตด้วยบัญชีและระบบที่กำหนด เก็บหลักฐานเท่าที่จำเป็น และรายงานตามช่องทางทีม' },
+                    { text: 'ลองดึงใบแจ้งหนี้ของผู้ใช้จริงแบบสุ่มเพื่อเพิ่มตัวอย่าง', feedback: 'ขอบเขตระบุบัญชีทดสอบและ staging เท่านั้น ห้ามขยายไปใช้ข้อมูลจริงโดยไม่ได้รับอนุญาต' },
+                    { text: 'ส่ง request จำนวนมากเพื่อหาว่าระบบรับได้แค่ไหน', feedback: 'ไม่ได้อยู่ในขอบเขตทดสอบนี้และอาจรบกวนระบบ ลองใช้กรณีที่ทีมกำหนดและหยุดเมื่อพบการเปิดเผยข้อมูล' },
+                    { text: 'เปลี่ยนข้อมูลใบแจ้งหนี้ของ B เพื่อยืนยันว่าการแก้ไขสำเร็จ', feedback: 'โจทย์ให้ตรวจการเข้าถึง ไม่ได้ให้แก้ข้อมูล ลองตรวจแบบอ่านอย่างปลอดภัยตามขอบเขตที่ตกลง' }
+                ]
+            },
+            {
+                id: 'practice_performance', skill: 'Performance Testing', level: 'กลาง',
+                title: 'เตรียม Load Test',
+                scenario: 'ทีมต้องการรู้ว่าหน้าค้นหาสินค้ารองรับการใช้งานช่วงแคมเปญได้หรือไม่ และกำลังจะทดสอบบนสภาพแวดล้อมที่จัดไว้',
+                prompt: 'ก่อนเริ่มรันโหลด ควรตกลงสิ่งใดกับทีม?',
+                options: [
+                    { text: 'รูปแบบผู้ใช้และปริมาณโหลดที่ใกล้เคียงจริง ระยะเวลา ข้อมูลทดสอบ เกณฑ์ตอบสนอง และขอบเขตระบบที่อนุญาต', correct: true, feedback: 'ถูกต้อง ผลทดสอบมีความหมายเมื่อ workload และเกณฑ์สำเร็จชัด พร้อมระบุระบบและช่วงเวลาที่ได้รับอนุญาต' },
+                    { text: 'เพิ่มจำนวนผู้ใช้จำลองให้มากที่สุดโดยไม่มีเกณฑ์หยุด', feedback: 'โหลดสูงสุดอย่างเดียวอาจไม่ตอบโจทย์และเสี่ยงกระทบระบบ ลองกำหนด workload เป้าหมายและเกณฑ์หยุดก่อน' },
+                    { text: 'รันบน production ตอนลูกค้าใช้งานมากโดยไม่แจ้งทีม', feedback: 'การทดสอบอาจกระทบผู้ใช้จริง ต้องใช้สภาพแวดล้อมและช่วงเวลาที่ได้รับอนุญาตและวางแผนผลกระทบ' },
+                    { text: 'ดูเฉพาะจำนวน request โดยไม่สนเวลาและ error', feedback: 'จำนวน request ไม่พอประเมินประสบการณ์ผู้ใช้ ควรกำหนดเวลา response และอัตราความผิดพลาดร่วมด้วย' }
+                ]
+            },
+            {
+                id: 'practice_exploratory', skill: 'Exploratory Testing', level: 'กลาง',
+                title: 'ค้นหาปัญหาในตะกร้าสินค้า',
+                scenario: 'มีเวลา 30 นาทีสำรวจตะกร้าสินค้าหลังเพิ่มฟีเจอร์เปลี่ยนจำนวนรายการ โดยยังไม่มีชุดทดสอบครบทุกแบบ',
+                prompt: 'เริ่ม session อย่างไรให้สำรวจได้มีทิศทางและสื่อสารสิ่งที่พบได้?',
+                options: [
+                    { text: 'ตั้ง charter เรื่องการเปลี่ยนจำนวนและยอดรวม เตรียมข้อมูล จดเส้นทาง/ข้อสังเกต และบันทึกบั๊กพร้อมหลักฐานระหว่าง session', correct: true, feedback: 'ถูกต้อง charter ช่วยคุมขอบเขต ขณะที่บันทึกช่วยให้ทำซ้ำและอธิบายสิ่งที่สำรวจได้' },
+                    { text: 'คลิกทุกปุ่มแบบสุ่มแล้วจำสิ่งที่เกิดขึ้นไว้', feedback: 'การสำรวจอิสระมีประโยชน์ แต่การไม่มีเป้าหมายหรือบันทึกทำให้พลาดประเด็นและเล่าซ้ำได้ยาก' },
+                    { text: 'รอให้ทีมเขียน test case ครบทุกกรณีก่อนจึงเริ่ม', feedback: 'การสำรวจช่วยค้นหาความเสี่ยงใหม่ระหว่างที่ข้อกำหนดยังพัฒนาได้ ลองตั้งขอบเขตและเริ่มด้วยหลักฐาน' },
+                    { text: 'แก้ข้อมูลในระบบเพื่อดูว่าหน้าจอเปลี่ยนหรือไม่', feedback: 'อย่าเปลี่ยนข้อมูลโดยไม่มีแผนและสิทธิ์ ลองใช้ข้อมูลทดสอบและเส้นทางที่ตกลงไว้' }
+                ]
+            },
+            {
+                id: 'practice_collaboration', skill: 'สื่อสารและทำงานเป็นทีม', level: 'เริ่มต้น',
+                title: 'นักพัฒนาทำซ้ำบั๊กไม่ได้',
+                scenario: 'นักพัฒนาบอกว่ายังทำซ้ำบั๊กที่คุณรายงานไม่ได้ และทั้งสองฝ่ายใช้ environment คนละชุด',
+                prompt: 'การตอบกลับแบบใดช่วยทีมเดินหน้าต่อได้ดีที่สุด?',
+                options: [
+                    { text: 'แชร์ขั้นตอนและข้อมูลทดสอบที่ใช้ เทียบ environment/build แล้วช่วยกันทดลองโดยไม่กล่าวโทษ', correct: true, feedback: 'ถูกต้อง ข้อมูลแวดล้อมที่ตรงกันช่วยแยกสาเหตุได้ และการร่วมตรวจสอบทำให้ทีมคุยกันบนหลักฐาน' },
+                    { text: 'ยืนยันว่าบั๊กมีแน่นอนและปิดการสนทนา', feedback: 'การยืนยันโดยไม่ตรวจความต่างของ environment ทำให้หาสาเหตุช้าลง ลองเทียบเงื่อนไขที่ทำซ้ำได้ก่อน' },
+                    { text: 'ปิดบั๊กทันทีเพราะอีกคนยังไม่พบ', feedback: 'การทำซ้ำไม่ได้ครั้งเดียวไม่ได้พิสูจน์ว่าปัญหาไม่มี ลองตรวจ build, ข้อมูล และขั้นตอนที่ต่างกัน' },
+                    { text: 'ส่งข้อมูลรับรองหรือ token จริงให้เพื่อให้ลองใช้บัญชีเดียวกัน', feedback: 'ห้ามแชร์ข้อมูลรับรองจริง ให้ใช้บัญชีทดสอบและข้อมูลที่ได้รับอนุญาตแทน' }
+                ]
+            },
+            {
+                id: 'practice_decision_table', skill: 'เทคนิคออกแบบการทดสอบ', level: 'กลาง',
+                title: 'ส่วนลดมีหลายเงื่อนไข',
+                scenario: 'คูปองใช้ได้เมื่อบัญชีเป็นลูกค้าใหม่และยอดซื้ออย่างน้อย 500 บาท ส่วนช่องทางชำระเงินไม่มีผลต่อสิทธิ์',
+                prompt: 'วิธีใดช่วยตรวจชุดเงื่อนไขที่มีหลายทางเลือกได้เป็นระบบที่สุด?',
+                options: [
+                    { text: 'ทำตารางตัดสินใจแสดงชุดเงื่อนไขและผลลัพธ์ แล้วเลือกชุดที่จำเป็นตามความเสี่ยง', correct: true, feedback: 'ถูกต้อง ตารางตัดสินใจช่วยมองชุดผสมของเงื่อนไขและลดโอกาสลืมผลลัพธ์ของแต่ละกฎ' },
+                    { text: 'ทดสอบเฉพาะลูกค้าใหม่ที่ซื้อเกิน 500 บาท', feedback: 'กรณีนี้ตรวจเพียงทางที่ผ่าน ลองครอบคลุมชุดที่ไม่ผ่านเพราะเงื่อนไขลูกค้าหรือยอดซื้อด้วย' },
+                    { text: 'สุ่มค่าจำนวนมากโดยไม่บันทึกเงื่อนไข', feedback: 'การสุ่มอาจพบปัญหา แต่บอกไม่ได้ว่าครอบคลุมกฎสำคัญครบหรือไม่ ลองจัดชุดเงื่อนไขให้เห็นชัดก่อน' },
+                    { text: 'ทดสอบทุกจำนวนเงินที่เป็นไปได้ทีละค่า', feedback: 'จำนวนค่าที่เป็นไปได้อาจมากเกินจำเป็น ใช้กฎทางธุรกิจและเทคนิคออกแบบเพื่อเลือกชุดที่ให้ข้อมูลคุ้มค่า' }
+                ]
+            },
+            {
+                id: 'practice_state_transition', skill: 'State Transition Testing', level: 'กลาง',
+                title: 'บัญชีถูกล็อกหลังใส่รหัสผิด',
+                scenario: 'ระบบล็อกบัญชีเมื่อใส่รหัสผิดครบ 3 ครั้ง และปลดล็อกหลัง 10 นาทีตามเวลาของระบบ',
+                prompt: 'ชุดตรวจใดเหมาะกับกติกาที่เปลี่ยนสถานะตามเหตุการณ์?',
+                options: [
+                    { text: 'ตรวจการเปลี่ยนจากปกติเป็นล็อกที่ครั้งที่ 3 ตรวจครั้งที่ 2 ว่ายังไม่ล็อก และตรวจการปลดล็อกเมื่อครบ/ก่อนครบเวลา', correct: true, feedback: 'ถูกต้อง ทดสอบทั้งสถานะ เหตุการณ์ และขอบเขตการเปลี่ยนสถานะ รวมถึงเงื่อนไขเวลา' },
+                    { text: 'ทดสอบเฉพาะรหัสผ่านที่ถูกต้องหนึ่งครั้ง', feedback: 'กรณีปกติไม่ครอบคลุมเส้นทางที่บัญชีเปลี่ยนสถานะเมื่อใส่รหัสผิดหลายครั้ง' },
+                    { text: 'ใส่รหัสผิดเป็นจำนวนมากโดยไม่ตรวจสถานะระหว่างทาง', feedback: 'การข้ามจุดเปลี่ยนทำให้ไม่รู้ว่าล็อกตรงจำนวนครั้งที่กำหนดหรือไม่ ลองตรวจแต่ละขอบเขต' },
+                    { text: 'ดูเฉพาะข้อความแจ้งเตือนหลังล็อก', feedback: 'ข้อความเป็นเพียงส่วนหนึ่ง ต้องตรวจด้วยว่าการเข้าสู่ระบบถูกปฏิเสธและกลับมาใช้ได้ตามกติกา' }
+                ]
+            },
+            {
+                id: 'practice_confirmation_regression', skill: 'ยืนยันการแก้ไขและ Regression', level: 'กลาง',
+                title: 'แก้บั๊กส่วนลดผิดซ้ำ',
+                scenario: 'ทีมแก้บั๊กที่ทำให้ส่วนลดถูกหักสองครั้งใน checkout แล้ว',
+                prompt: 'หลังได้รับ build ใหม่ ควรวางแผนตรวจอย่างไร?',
+                options: [
+                    { text: 'ยืนยันขั้นตอนเดิมบน build ใหม่ แล้วเลือก regression รอบกติกาส่วนลด ยอดรวม และการชำระเงินตามความเสี่ยง', correct: true, feedback: 'ถูกต้อง การยืนยันตรวจว่าปัญหาเดิมหาย ส่วน regression ตรวจผลข้างเคียงในส่วนที่เกี่ยวข้อง' },
+                    { text: 'ตรวจเฉพาะว่าหน้าเว็บเปิดได้', feedback: 'การเปิดหน้าเว็บไม่ได้ยืนยันว่าการแก้ไขทำงานหรือไม่ ลองทำซ้ำสถานการณ์เดิมและเส้นทางที่เสี่ยงต่อผลกระทบ' },
+                    { text: 'ทดสอบระบบใหม่ทั้งหมดทุกกรณีก่อนเสมอ', feedback: 'การทดสอบซ้ำทั้งหมดอาจใช้ทรัพยากรเกินจำเป็น เลือกขอบเขต regression ตามความเสี่ยงและผลกระทบ' },
+                    { text: 'ปิดบั๊กทันทีเมื่อเห็นเลข build เปลี่ยน', feedback: 'build ใหม่ไม่ได้ยืนยันผลของการแก้ไข ต้องรันกรณีทดสอบและเก็บผลจริงก่อนปิด' }
+                ]
+            },
+            {
+                id: 'practice_api_retry', skill: 'API และ HTTP Semantics', level: 'กลาง',
+                title: 'สร้างคำสั่งซื้อแล้วเครือข่าย timeout',
+                scenario: 'ส่ง POST เพื่อสร้างคำสั่งซื้อแล้ว client timeout จึงยังไม่รู้ว่า server สร้างรายการสำเร็จหรือไม่',
+                prompt: 'ก่อนส่งคำขอซ้ำ Tester ควรตรวจอะไร?',
+                options: [
+                    { text: 'ตรวจสัญญา API เรื่อง idempotency/key และตรวจสถานะคำสั่งซื้อก่อน เพื่อไม่ให้สร้างรายการซ้ำโดยไม่ตั้งใจ', correct: true, feedback: 'ถูกต้อง POST ไม่ได้เป็น idempotent โดยอัตโนมัติตาม HTTP semantics ต้องยืนยันแนวทางของ API หรือใช้กลไกตรวจสอบก่อนลองซ้ำ' },
+                    { text: 'ส่ง POST ซ้ำทันทีจนกว่าจะได้รับ 200', feedback: 'การส่งซ้ำอาจสร้างหลายรายการ หากคำขอแรกสำเร็จแต่ response หายไป ควรตรวจสถานะและสัญญาการลองใหม่ก่อน' },
+                    { text: 'เปลี่ยน POST เป็น GET แล้วส่งข้อมูลเดิมใน URL', feedback: 'การเปลี่ยน method ไม่ได้รักษาความหมายหรือความปลอดภัยของการสร้างข้อมูล และอาจทำให้ข้อมูลอ่อนไหวรั่วใน URL' },
+                    { text: 'สรุปว่าระบบไม่สร้างรายการเพราะไม่มี response', feedback: 'timeout บอกเพียงว่า client ไม่ได้รับคำตอบ ไม่ได้ยืนยันว่า server ไม่ได้ประมวลผลคำขอ' }
+                ]
+            },
+            {
+                id: 'practice_flaky_test', skill: 'ความเสถียรของ Automation', level: 'กลาง',
+                title: 'UI test ผ่านบ้างไม่ผ่านบ้าง',
+                scenario: 'สคริปต์คลิกปุ่มหลังหน่วงเวลาคงที่ 2 วินาที บางครั้งหน้าโหลดช้ากว่านั้นและการทดสอบล้มเหลว',
+                prompt: 'แนวทางแก้ที่ทนต่อความเร็วหน้าเว็บต่างกันควรเป็นอย่างไร?',
+                options: [
+                    { text: 'รอเงื่อนไขที่ผู้ใช้มองเห็นได้ เช่น ปุ่มพร้อมใช้งานหรือผลลัพธ์ปรากฏ ใช้ locator ที่ชัด และตรวจสาเหตุหากยังล้มเหลว', correct: true, feedback: 'ถูกต้อง การรอตามสถานะและ assertion ที่ retry ได้ช่วยลดการพึ่งเวลาคงที่ ส่วน log/trace ช่วยวิเคราะห์สาเหตุจริง' },
+                    { text: 'เพิ่มเวลาหน่วงเป็น 30 วินาทีในทุกกรณี', feedback: 'การหน่วงยาวทำให้ช้าและยังอาจล้มเหลวเมื่อสถานะไม่เกิดขึ้น ควรรอตามผลที่คาดหวังแทน' },
+                    { text: 'เพิ่มจำนวน retry จนกว่าการทดสอบจะผ่านสักครั้ง', feedback: 'retry อาจซ่อนปัญหาหรือความไม่เสถียร ควรเก็บหลักฐานและหาสาเหตุ เช่น locator, network หรือข้อมูลแข่งขันกัน' },
+                    { text: 'ใช้ selector จาก class ภายในที่เปลี่ยนบ่อยโดยไม่ตรวจความเฉพาะเจาะจง', feedback: 'selector ที่ผูกกับรายละเอียดภายในอาจเปราะเมื่อ UI เปลี่ยน เลือก locator ที่สื่อถึงบทบาทหรือสัญญาที่ผู้ใช้เห็นเมื่อเหมาะสม' }
+                ]
+            },
+            {
+                id: 'practice_ci_failure', skill: 'CI/CD และการอ่านผลทดสอบ', level: 'กลาง',
+                title: 'Workflow ล้มก่อนเริ่มทดสอบ',
+                scenario: 'หน้า CI แสดงสถานะล้มเหลว แต่ log ระบุว่าขั้นติดตั้ง dependency ล้มเหลวก่อนคำสั่งรัน test',
+                prompt: 'ควรรายงานผลนี้อย่างไร?',
+                options: [
+                    { text: 'ระบุว่าการตรวจยังไม่รัน ตรวจ log ของขั้น setup แยกจากผลของ test และประสานแก้ environment/dependency ก่อนสรุปคุณภาพโค้ด', correct: true, feedback: 'ถูกต้อง แยกความล้มเหลวของ pipeline ออกจาก test failure และบอกให้ชัดว่าขอบเขตใดยังไม่มีผลตรวจ' },
+                    { text: 'สรุปว่าทุก test ผ่านเพราะไม่มี test รายงาน fail', feedback: 'ไม่มีผลทดสอบไม่เท่ากับผ่าน ต้องสื่อสารว่า test ยังไม่ได้เริ่มทำงาน' },
+                    { text: 'สรุปว่า release ต้องมีบั๊กแน่นอน', feedback: 'ปัญหา setup ยังไม่ใช่หลักฐานว่า product มี defect ให้หาสาเหตุจากขั้นตอนและ log ก่อน' },
+                    { text: 'กด rerun ซ้ำไปเรื่อย ๆ โดยไม่เก็บ log', feedback: 'การ rerun อาจช่วยเมื่อเป็นปัญหาชั่วคราว แต่ควรตรวจ log และบันทึกเงื่อนไขเพื่อแก้ต้นเหตุ' }
+                ]
+            },
+            {
+                id: 'practice_test_report', skill: 'สรุปผลและความเสี่ยง', level: 'กลาง',
+                title: 'ผู้บริหารถามว่าปล่อยได้หรือยัง',
+                scenario: 'ทดสอบเส้นทางหลักผ่าน แต่ยังไม่ได้ตรวจ browser รุ่นเก่าและมี defect ที่รู้แล้วหนึ่งรายการ',
+                prompt: 'รายงานแบบใดช่วยให้ผู้มีอำนาจตัดสินใจได้ดีที่สุด?',
+                options: [
+                    { text: 'สรุปขอบเขตที่ตรวจ ผลลัพธ์ defect ที่ยังเปิด สิ่งที่ยังไม่ตรวจ ผลกระทบ และความเสี่ยงคงเหลือพร้อมหลักฐาน', correct: true, feedback: 'ถูกต้อง รายงานควรบอกทั้งสิ่งที่รู้และช่องว่างที่ยังเหลือ เพื่อให้ทีมตัดสินใจบนข้อมูลครบถ้วน' },
+                    { text: 'ตอบว่า “ผ่าน” เพราะเส้นทางหลักผ่าน', feedback: 'คำว่า “ผ่าน” อย่างเดียวซ่อนขอบเขตที่ยังไม่ได้ตรวจและ defect ที่ยังเปิดอยู่' },
+                    { text: 'ส่งจำนวน test case ที่รันอย่างเดียว', feedback: 'จำนวนกรณีไม่บอกความเสี่ยงหรือผลต่อผู้ใช้ ลองระบุผลและข้อจำกัดของการตรวจด้วย' },
+                    { text: 'ให้ Tester เป็นคนอนุมัติ release โดยไม่หารือกับทีม', feedback: 'รายงานให้ข้อมูลเพื่อประกอบการตัดสินใจ ส่วนการปล่อยขึ้นกับอำนาจและเกณฑ์ที่องค์กรกำหนด' }
+                ]
+            },
+            {
+                id: 'practice_testdata', skill: 'การจัดการ Test Data', level: 'กลาง',
+                title: 'ต้องตรวจข้อมูลลูกค้าในบั๊ก',
+                scenario: 'ทีมต้องตรวจบั๊กค้นหาลูกค้า แต่ระบบทดสอบมีข้อมูลที่อาจเชื่อมโยงกับบุคคลจริง',
+                prompt: 'วิธีเตรียมข้อมูลแบบใดเหมาะสมที่สุด?',
+                options: [
+                    { text: 'ใช้ข้อมูลจำลองหรือข้อมูลที่ได้รับอนุมัติ จำกัดข้อมูลเท่าที่จำเป็น และทำตามขั้นตอนปกปิด/ลบข้อมูลของทีม', correct: true, feedback: 'ถูกต้อง ลดข้อมูลส่วนบุคคลและใช้สิทธิ์ตามขอบเขต พร้อมเก็บข้อมูลทดสอบอย่างรับผิดชอบ' },
+                    { text: 'คัดลอกฐานข้อมูล production ทั้งชุดมาเครื่องส่วนตัวเพื่อให้ทำซ้ำง่าย', feedback: 'การคัดลอกข้อมูลเกินจำเป็นเพิ่มความเสี่ยงด้านความเป็นส่วนตัวและความปลอดภัย ใช้ข้อมูลจำลองหรือชุดที่อนุมัติแทน' },
+                    { text: 'แชร์ภาพหน้าจอข้อมูลจริงในช่องสาธารณะของทีม', feedback: 'หลักฐานควรปกปิดข้อมูลที่ระบุตัวบุคคลได้และแชร์เฉพาะช่องทางที่ได้รับอนุญาต' },
+                    { text: 'ใช้บัญชีผู้ใช้จริงของลูกค้าเพื่อทดสอบซ้ำโดยไม่แจ้งผู้ดูแล', feedback: 'การเข้าถึงหรือเปลี่ยนข้อมูลจริงโดยไม่ได้รับอนุญาตไม่เหมาะสม ใช้บัญชีทดสอบตามขั้นตอนของทีม' }
+                ]
+            },
+            {
+                id: 'practice_data_integrity', skill: 'ความถูกต้องและความสัมพันธ์ของข้อมูล', level: 'กลาง',
+                title: 'รายการชำระเงินอ้างถึงคำสั่งซื้อ',
+                scenario: 'ข้อกำหนดระบุว่ารายการชำระเงินทุกแถวต้องเชื่อมกับคำสั่งซื้อที่มีอยู่ และพฤติกรรมเมื่อลบคำสั่งซื้อต้องเป็นไปตามกติกาของผลิตภัณฑ์',
+                prompt: 'จะตรวจความสัมพันธ์นี้อย่างไรให้ครอบคลุมและปลอดภัย?',
+                options: [
+                    { text: 'ตรวจข้อมูลอ้างอิงด้วย query แบบจำกัดขอบเขต แล้วทดสอบการลบ/แก้ในฐานข้อมูลทดสอบตามกติกาที่ตกลง พร้อมตรวจว่าไม่มีข้อมูลกำพร้า', correct: true, feedback: 'ถูกต้อง ตรวจทั้ง referential integrity และพฤติกรรมเมื่อเปลี่ยนข้อมูลในสภาพแวดล้อมที่ได้รับอนุญาต โดยไม่สมมติว่าจะต้องลบต่อหรือปฏิเสธเสมอ' },
+                    { text: 'สมมติว่าทุกฐานข้อมูลลบรายการลูกตามโดยอัตโนมัติ', feedback: 'พฤติกรรมขึ้นกับ constraint และกติกาของระบบ ต้องตรวจข้อกำหนดและผลจริง ไม่ควรเดา cascade behavior' },
+                    { text: 'ลบข้อมูลคำสั่งซื้อจาก production แล้วดูว่ารายการชำระเงินยังอยู่หรือไม่', feedback: 'ห้ามเปลี่ยนข้อมูลจริงโดยไม่มีแผนและอำนาจ ใช้ฐานข้อมูลทดสอบและข้อมูลจำลองที่ได้รับอนุญาต' },
+                    { text: 'ตรวจเฉพาะว่าหน้ารายการแสดงข้อมูลได้', feedback: 'หน้าจอที่แสดงได้ไม่ได้ยืนยันว่าความสัมพันธ์ของข้อมูลถูกต้อง ลองตรวจรหัสอ้างอิงและข้อกำหนดด้วย' }
+                ]
+            },
+            {
+                id: 'practice_release_scope', skill: 'วางแผนตามความเสี่ยง', level: 'กลาง',
+                title: 'เวลาทดสอบเหลือเพียงครึ่งวัน',
+                scenario: 'มีเวลาทดสอบจำกัด ระบบมีฟังก์ชันชำระเงินที่เพิ่งแก้ไข และหน้าคู่มือที่ไม่เปลี่ยนมานาน',
+                prompt: 'ควรวางแผนอย่างไรให้ข้อมูลก่อนปล่อยมีประโยชน์?',
+                options: [
+                    { text: 'ประเมินผลกระทบและโอกาสเกิด เลือก flow ชำระเงินกับจุดเชื่อมต่อสำคัญก่อน แล้วบอกขอบเขตที่ไม่ได้ตรวจและความเสี่ยงคงเหลือ', correct: true, feedback: 'ถูกต้อง จัดสรรเวลาตามความเสี่ยงและสื่อสารสิ่งที่ยังไม่ครอบคลุม แทนการอ้างว่าตรวจครบ' },
+                    { text: 'แบ่งเวลาเท่ากันให้ทุกหน้าจอโดยไม่ดูผลกระทบ', feedback: 'เวลาเท่ากันอาจละเลยส่วนสำคัญที่เพิ่งเปลี่ยนหรือมีผลกระทบสูง ลองจัดลำดับตามความเสี่ยง' },
+                    { text: 'ทดสอบแต่หน้าคู่มือเพราะตรวจง่าย', feedback: 'ความง่ายไม่เท่ากับความเสี่ยงต่ำหรือสูง ลองพิจารณาผลต่อผู้ใช้ ธุรกิจ และการเปลี่ยนแปลงล่าสุด' },
+                    { text: 'แจ้งว่าครอบคลุมทุกอย่างแม้ไม่ได้ตรวจ', feedback: 'รายงานต้องตรงกับหลักฐานและขอบเขตจริง ระบุช่องว่างให้ผู้ตัดสินใจเห็นชัด' }
+                ]
             }
         ];
 
         const articleData = {
+            'tester_practice': `
+                <h1 class="text-slate-900 border-b-2 border-violet-500 pb-2 inline-block">ห้องฝึกทักษะ Tester</h1>
+                <p class="text-slate-600 mt-4 text-lg">ฝึกคิดจากสถานการณ์ใกล้เคียงงานจริง 22 ข้อ ครอบคลุมพื้นฐานการทดสอบ การวิเคราะห์ความเสี่ยง เทคนิคออกแบบกรณีทดสอบ API/HTTP ฐานข้อมูล Test Data, Accessibility, Security, Performance, Automation, CI/CD และการสื่อสารในทีม เลือกคำตอบแล้วอ่านเหตุผล จากนั้นลองอธิบายด้วยคำของตัวเองว่าทำไมจึงเลือกแนวทางนั้น</p>
+
+                <section class="not-prose my-6 rounded-2xl border border-slate-200 bg-slate-50 p-5" aria-labelledby="practiceCoverageHeading">
+                    <h2 id="practiceCoverageHeading" class="mt-0 text-lg font-bold text-slate-900">แผนที่ทักษะที่ได้ฝึก</h2>
+                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-xl border border-slate-200 bg-white p-4">
+                            <h3 class="mt-0 text-sm font-bold text-indigo-800">พื้นฐานและการออกแบบ</h3>
+                            <p class="mb-0 text-sm leading-6 text-slate-600">ตั้งคำถามกับ requirement, boundary value, decision table, state transition, จัดลำดับความเสี่ยง, ยืนยันบั๊กและ regression</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-white p-4">
+                            <h3 class="mt-0 text-sm font-bold text-indigo-800">ทักษะเชิงเทคนิค</h3>
+                            <p class="mb-0 text-sm leading-6 text-slate-600">ตรวจ API และสิทธิ์, เข้าใจ HTTP retry, เปรียบเทียบข้อมูลและความสัมพันธ์ฐานข้อมูล, จัดการข้อมูลทดสอบอย่างเหมาะสม</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-white p-4">
+                            <h3 class="mt-0 text-sm font-bold text-indigo-800">คุณภาพและความเสี่ยง</h3>
+                            <p class="mb-0 text-sm leading-6 text-slate-600">ตรวจ Accessibility, Security ภายในขอบเขตที่อนุญาต, Performance ตามเป้าหมาย และแจ้งสิ่งที่ยังไม่ได้ตรวจ</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-white p-4">
+                            <h3 class="mt-0 text-sm font-bold text-indigo-800">Automation และการทำงานเป็นทีม</h3>
+                            <p class="mb-0 text-sm leading-6 text-slate-600">เลือกสิ่งที่ควร automate ลด flaky test อ่านผล CI แยกปัญหา setup จาก test failure และสื่อสาร defect ด้วยหลักฐาน</p>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-4 text-xs leading-5 text-slate-500">สถานการณ์จำลองเหล่านี้เป็นแนวทางฝึกคิด ไม่ใช่ข้อบังคับเดียวสำหรับทุกทีม ให้ยึด requirement ข้อตกลง และเกณฑ์ความเสี่ยงของผลิตภัณฑ์จริง</p>
+                </section>
+
+                <div class="bg-violet-50 border border-violet-200 rounded-xl p-5 my-6">
+                    <h2 class="text-violet-900 mt-0 font-bold">วิธีฝึก</h2>
+                    <ol class="text-sm text-violet-950 mb-0 pl-5 space-y-1 list-decimal">
+                        <li>เลือกทักษะที่อยากฝึก หรือดูโจทย์ทั้งหมด</li>
+                        <li>อ่านสถานการณ์ เลือกคำตอบที่คิดว่าเหมาะที่สุด แล้วกดตรวจคำตอบ</li>
+                        <li>อ่านเหตุผล ลองอธิบาย trade-off และหลักฐานที่ต้องเก็บก่อนเปิดโจทย์ถัดไป</li>
+                    </ol>
+                </div>
+
+                <p class="text-sm text-slate-600">โจทย์เป็นสถานการณ์จำลองเพื่อฝึกเหตุผล ไม่มีคำตอบชุดเดียวที่ใช้แทนกติกาของทุกทีมได้ ความคืบหน้าจะเก็บไว้ในเบราว์เซอร์นี้ และล้างได้ทุกเมื่อ</p>
+                <section class="not-prose mt-8" id="practiceLab" aria-labelledby="practiceHeading">
+                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                        <div class="min-w-0 flex-1">
+                            <h2 id="practiceHeading" class="text-lg font-bold text-slate-900">เลือกหัวข้อฝึก</h2>
+                            <label for="practiceSkillFilter" class="block text-sm font-medium text-slate-700 mt-3 mb-1">ทักษะ</label>
+                            <select id="practiceSkillFilter" class="w-full sm:max-w-sm rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="all">ทุกทักษะ</option>
+                            </select>
+                        </div>
+                        <div class="sm:text-right">
+                            <p id="practiceProgressText" class="text-sm font-semibold text-indigo-800" role="status" aria-live="polite"></p>
+                            <progress id="practiceProgressBar" class="mt-2 h-2 w-full sm:w-48 accent-indigo-600" max="22" value="0" aria-label="ความคืบหน้าการฝึกทักษะ"></progress>
+                            <p id="practiceStorageNote" class="mt-1 text-xs text-slate-500"></p>
+                            <button id="practiceResetButton" type="button" class="mt-2 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">ล้างความคืบหน้า</button>
+                        </div>
+                    </div>
+                    <p id="practiceResultsSummary" class="mt-6 mb-3 text-sm text-slate-600" role="status" aria-live="polite"></p>
+                    <div id="practiceExerciseList" class="space-y-5"></div>
+                </section>
+            `,
             // ================= CATEGORY 0 (NEW) =================
                         'modern_tester': `
                 <h1 class="text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">Software Tester ทำอะไรบ้าง?</h1>
@@ -1419,6 +1753,20 @@ LIMIT 20;</code></pre>
         };
 
         const articleSources = {
+            tester_practice: [
+                { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' },
+                { label: 'W3C WAI-ARIA APG: Dialog (Modal) Pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/' },
+                { label: 'W3C WCAG 2.2: Focus Visible', url: 'https://www.w3.org/WAI/WCAG22/Understanding/focus-visible' },
+                { label: 'OWASP Web Security Testing Guide v4.2: Authorization Testing', url: 'https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema/' },
+                { label: 'Playwright: Best Practices', url: 'https://playwright.dev/docs/best-practices' },
+                { label: 'Cypress: Retry-ability', url: 'https://docs.cypress.io/app/core-concepts/retry-ability' },
+                { label: 'Postman: Write scripts to test API response data', url: 'https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/' },
+                { label: 'RFC 9110: HTTP Semantics (idempotent methods)', url: 'https://www.rfc-editor.org/rfc/rfc9110.html' },
+                { label: 'PostgreSQL: Foreign Keys', url: 'https://www.postgresql.org/docs/current/tutorial-fk.html' },
+                { label: 'Grafana k6: Automated performance testing', url: 'https://grafana.com/docs/k6/latest/testing-guides/automated-performance-testing/' },
+                { label: 'GitHub Actions: Workflows', url: 'https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows' },
+                { label: 'Git Book: About Version Control', url: 'https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control.html' }
+            ],
             modern_tester: [
                 { label: 'ISTQB Certified Tester Foundation Level Syllabus v4.0.1', url: 'https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf' }
             ],
@@ -1485,12 +1833,172 @@ LIMIT 20;</code></pre>
         };
 
         const articleSearchIndex = {};
+        const PRACTICE_PROGRESS_KEY = 'tester-wiki-practice-progress-v1';
+        let completedPracticeIds = new Set();
+        let practiceProgressLoaded = false;
+        let practiceStorageAvailable = true;
+
+        function readPracticeProgress() {
+            try {
+                const savedIds = JSON.parse(window.localStorage.getItem(PRACTICE_PROGRESS_KEY) || '[]');
+                const knownIds = new Set(practiceExercises.map(exercise => exercise.id));
+                return new Set(Array.isArray(savedIds) ? savedIds.filter(id => knownIds.has(id)) : []);
+            } catch (error) {
+                practiceStorageAvailable = false;
+                return new Set();
+            }
+        }
+
+        function savePracticeProgress() {
+            try {
+                window.localStorage.setItem(PRACTICE_PROGRESS_KEY, JSON.stringify([...completedPracticeIds]));
+                practiceStorageAvailable = true;
+            } catch (error) {
+                practiceStorageAvailable = false;
+            }
+        }
+
+        function updatePracticeProgress() {
+            const progressText = document.getElementById('practiceProgressText');
+            const progressBar = document.getElementById('practiceProgressBar');
+            const resetButton = document.getElementById('practiceResetButton');
+            if (!progressText || !progressBar || !resetButton) return;
+
+            const completedCount = completedPracticeIds.size;
+            progressBar.max = practiceExercises.length;
+            progressBar.value = completedCount;
+            progressBar.setAttribute('aria-valuetext', `${completedCount} จาก ${practiceExercises.length} ข้อ`);
+            progressText.textContent = `ตอบถูกแล้ว ${completedCount} / ${practiceExercises.length} ข้อ`;
+            const storageNote = document.getElementById('practiceStorageNote');
+            if (storageNote) {
+                storageNote.textContent = practiceStorageAvailable
+                    ? 'บันทึกความคืบหน้าไว้เฉพาะในเบราว์เซอร์นี้'
+                    : 'เบราว์เซอร์ไม่อนุญาตให้บันทึก จะจำความคืบหน้าไว้ระหว่างเซสชันนี้เท่านั้น';
+            }
+            resetButton.disabled = completedCount === 0;
+            resetButton.classList.toggle('opacity-50', resetButton.disabled);
+            resetButton.classList.toggle('cursor-not-allowed', resetButton.disabled);
+        }
+
+        function renderPracticeExercises(skill = 'all') {
+            const list = document.getElementById('practiceExerciseList');
+            const summary = document.getElementById('practiceResultsSummary');
+            if (!list || !summary) return;
+
+            const exercises = practiceExercises.filter(exercise => skill === 'all' || exercise.skill === skill);
+            list.replaceChildren();
+            summary.textContent = `แสดง ${exercises.length} จาก ${practiceExercises.length} โจทย์`;
+
+            if (exercises.length === 0) {
+                const emptyState = document.createElement('p');
+                emptyState.className = 'rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600';
+                emptyState.textContent = 'ยังไม่มีโจทย์ในทักษะนี้';
+                list.appendChild(emptyState);
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            exercises.forEach((exercise, exerciseIndex) => {
+                const card = document.createElement('article');
+                card.className = 'rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6';
+
+                const badges = document.createElement('div');
+                badges.className = 'flex flex-wrap items-center gap-2';
+                const skillBadge = document.createElement('span');
+                skillBadge.className = 'rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-800';
+                skillBadge.textContent = exercise.skill;
+                const levelBadge = document.createElement('span');
+                levelBadge.className = 'rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600';
+                levelBadge.textContent = `ระดับ ${exercise.level}`;
+                badges.append(skillBadge, levelBadge);
+
+                const heading = document.createElement('h3');
+                heading.className = 'mb-2 mt-4 text-lg font-bold text-slate-900';
+                heading.textContent = `${exerciseIndex + 1}. ${exercise.title}`;
+
+                const scenario = document.createElement('p');
+                scenario.className = 'mb-4 text-sm leading-6 text-slate-700';
+                scenario.textContent = exercise.scenario;
+
+                const form = document.createElement('form');
+                form.dataset.practiceId = exercise.id;
+                form.noValidate = true;
+
+                const fieldset = document.createElement('fieldset');
+                fieldset.className = 'space-y-2';
+                const legend = document.createElement('legend');
+                legend.className = 'mb-3 text-sm font-semibold leading-6 text-slate-800';
+                legend.textContent = exercise.prompt;
+                fieldset.appendChild(legend);
+
+                const choices = document.createElement('div');
+                choices.className = 'space-y-2';
+                exercise.options.forEach((option, optionIndex) => {
+                    const label = document.createElement('label');
+                    label.className = 'flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3 text-sm leading-6 text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 focus-within:ring-2 focus-within:ring-indigo-500';
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `practice-answer-${exercise.id}`;
+                    input.value = String(optionIndex);
+                    input.className = 'mt-1 h-4 w-4 shrink-0 accent-indigo-600';
+                    input.setAttribute('aria-describedby', `practice-feedback-${exercise.id}`);
+                    const text = document.createElement('span');
+                    text.textContent = option.text;
+                    label.append(input, text);
+                    choices.appendChild(label);
+                });
+                fieldset.appendChild(choices);
+
+                const submit = document.createElement('button');
+                submit.type = 'submit';
+                submit.className = 'mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2';
+                submit.textContent = 'ตรวจคำตอบ';
+
+                const feedback = document.createElement('p');
+                feedback.id = `practice-feedback-${exercise.id}`;
+                feedback.className = 'practice-feedback';
+                feedback.setAttribute('role', 'status');
+                feedback.setAttribute('aria-live', 'polite');
+                feedback.hidden = true;
+
+                form.append(fieldset, submit, feedback);
+                card.append(badges, heading, scenario, form);
+                fragment.appendChild(card);
+            });
+            list.appendChild(fragment);
+        }
+
+        function initPracticeLab() {
+            const filter = document.getElementById('practiceSkillFilter');
+            if (!filter) return;
+
+            if (!practiceProgressLoaded) {
+                completedPracticeIds = readPracticeProgress();
+                practiceProgressLoaded = true;
+            }
+            if (!filter.dataset.ready) {
+                const skills = [...new Set(practiceExercises.map(exercise => exercise.skill))];
+                skills.forEach(skill => {
+                    const option = document.createElement('option');
+                    option.value = skill;
+                    option.textContent = skill;
+                    filter.appendChild(option);
+                });
+                filter.dataset.ready = 'true';
+                filter.addEventListener('change', () => renderPracticeExercises(filter.value));
+            }
+            document.getElementById('practiceProgressBar').max = practiceExercises.length;
+            updatePracticeProgress();
+            renderPracticeExercises(filter.value || 'all');
+        }
+
         function buildArticleSearchIndex() {
             Object.keys(articleData).forEach(id => {
                 const template = document.createElement('template');
                 template.innerHTML = articleData[id];
                 articleSearchIndex[id] = (template.content.textContent || '').toLocaleLowerCase('th-TH');
             });
+            articleSearchIndex.tester_practice += ' ' + practiceExercises.map(exercise => [exercise.skill, exercise.title, exercise.scenario, exercise.prompt, ...exercise.options.map(option => option.text)].join(' ')).join(' ').toLocaleLowerCase('th-TH');
         }
 
         function renderSidebar(filterText = '') {
@@ -1604,6 +2112,7 @@ LIMIT 20;</code></pre>
             const contentArea = document.getElementById('articleContent');
             contentArea.innerHTML = articleData[id];
             appendArticleSources(contentArea, id);
+            if (id === 'tester_practice') initPracticeLab();
             document.getElementById('mainContentArea').scrollTop = 0;
             const heading = contentArea.querySelector('h1');
             if (heading) {
@@ -1637,6 +2146,47 @@ LIMIT 20;</code></pre>
             if (!link) return;
             event.preventDefault();
             loadArticle(link.dataset.articleId, true);
+        });
+
+        document.addEventListener('submit', event => {
+            const form = event.target.closest('form[data-practice-id]');
+            if (!form) return;
+            event.preventDefault();
+
+            const exercise = practiceExercises.find(item => item.id === form.dataset.practiceId);
+            const feedback = form.querySelector('.practice-feedback');
+            const selected = form.querySelector('input[type="radio"]:checked');
+            if (!exercise || !feedback) return;
+
+            feedback.hidden = false;
+            if (!selected) {
+                feedback.dataset.state = 'neutral';
+                feedback.textContent = 'เลือกคำตอบก่อน แล้วกดตรวจคำตอบอีกครั้ง';
+                return;
+            }
+
+            const option = exercise.options[Number(selected.value)];
+            if (!option) return;
+            feedback.dataset.state = option.correct ? 'correct' : 'try-again';
+            feedback.textContent = `${option.correct ? 'ถูกต้อง' : 'ลองอีกครั้ง'} — ${option.feedback}`;
+
+            if (option.correct && !completedPracticeIds.has(exercise.id)) {
+                completedPracticeIds.add(exercise.id);
+                savePracticeProgress();
+                updatePracticeProgress();
+            }
+        });
+
+        document.addEventListener('click', event => {
+            const resetButton = event.target.closest('#practiceResetButton');
+            if (!resetButton || !completedPracticeIds.size) return;
+            if (!window.confirm('ล้างความคืบหน้าการฝึกที่บันทึกไว้ในเบราว์เซอร์นี้หรือไม่?')) return;
+
+            completedPracticeIds = new Set();
+            savePracticeProgress();
+            updatePracticeProgress();
+            const filter = document.getElementById('practiceSkillFilter');
+            renderPracticeExercises(filter ? filter.value : 'all');
         });
 
         document.addEventListener('keydown', event => {

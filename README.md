@@ -1,6 +1,6 @@
 # Tester Wiki
 
-เว็บบทความภาษาไทยสำหรับเรียนรู้ Software Testing ตั้งแต่พื้นฐานและการออกแบบกรณีทดสอบ ไปจนถึง API, SQL, automation, performance, accessibility, security และการทำงานร่วมกับทีม
+เว็บบทความภาษาไทยสำหรับเรียนรู้ Software Testing ตั้งแต่พื้นฐานและการออกแบบกรณีทดสอบ ไปจนถึง API, SQL, automation, performance, accessibility, security และการทำงานร่วมกับทีม พร้อมห้องฝึกทักษะจากสถานการณ์จำลองและคำอธิบายหลังตอบ
 
 [![เปิดเว็บไซต์ Tester Wiki](https://img.shields.io/badge/Tester%20Wiki-%E0%B9%80%E0%B8%9B%E0%B8%B4%E0%B8%94%E0%B9%80%E0%B8%A7%E0%B9%87%E0%B8%9A%E0%B9%84%E0%B8%8B%E0%B8%95%E0%B9%8C-4F46E5?style=for-the-badge)](https://triphum1234-droid.github.io/tester-wiki/)
 
@@ -12,7 +12,7 @@
 
 ## เนื้อหา
 
-- `index.html` — หน้าเว็บและบทความทั้งหมด รวมเมนูค้นหา การนำทาง และแหล่งอ้างอิง
+- `index.html` — หน้าเว็บและบทความทั้งหมด รวมเมนูค้นหา การนำทาง แหล่งอ้างอิง และห้องฝึกทักษะ Tester แบบโต้ตอบ 22 โจทย์ ครอบคลุมการออกแบบการทดสอบ, API/HTTP, SQL, Test Data, Accessibility, Security, Performance, Automation และ CI/CD ความคืบหน้าบันทึกไว้ในเบราว์เซอร์ของผู้ใช้แต่ละคนโดยไม่ส่งไป backend
 
 ## การนำไปเผยแพร่
 
